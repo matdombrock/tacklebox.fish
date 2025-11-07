@@ -1,5 +1,7 @@
 #! /usr/bin/env fish
 
+source ../lib/input.fish
+
 function draw_card
     set cards 2 3 4 5 6 7 8 9 10 11
     echo $cards[(random 1 (count $cards))]
@@ -40,11 +42,7 @@ while true
     end
     echo "Your total: $value"
     set_color green
-    read -P "Hit or stand? (h/s): " choice
-    if test $status -ne 0
-        echo "Game quit. Goodbye!"
-        exit
-    end
+    set choice (input.line "$(set_color yellow)(h)it, (s)tand: ")
     if test "$choice" = q
         set_color normal
         echo "Game quit. Goodbye!"

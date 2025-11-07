@@ -1,16 +1,14 @@
 #! /usr/bin/env fish
 
+source ../lib/input.fish
+
 set secret (math (random)%100 + 1)
 set attempts 0
 
 echo "Guess the number (between 1 and 100):"
 
 while true
-    read -P (set_color green)"guess> " guess
-    if test $status -ne 0
-        echo "Game quit. Goodbye!"
-        exit
-    end
+    set guess (input.line "$(set_color green)guess> ")
     set attempts (math $attempts + 1)
     if test "$guess" -eq "$secret"
         set_color brgreen

@@ -1,6 +1,7 @@
 #! /usr/bin/env fish
 
 source ../lib/dict.fish
+source ../lib/input.fish
 
 set sc_intro \
     title="Dark Forest Adventure" \
@@ -200,7 +201,7 @@ function scene
                 set_color bryellow
                 echo -e (dict.get requires_msg $sc)\n
                 echo "!!META: You need a $(pretty_item $req) to proceed."
-                read --nchars=1 -P "$(set_color red)Any key to go back..."
+                input.char "$(set_color red)Press any key to go back..."
                 scene $last_scene
             else
                 set_color --bold green
@@ -250,12 +251,7 @@ function scene
         echo "$i. $opts_text[$i]"
     end
     # Get input
-    read --nchars=1 -P "$(set_color bryellow)Choose an option: " choice
-    # Check if we should quit
-    if test "$choice" = q
-        echo "Thanks for playing!"
-        exit 0
-    end
+    set choice (input.char "$(set_color bryellow)Choose an option: ")
     # Check if we have a number
     if not string match -qr '^[0-9]+$' $choice
         set choice 99 # Invalid choice
@@ -268,7 +264,7 @@ function scene
     else
         set_color red
         echo "Invalid choice. Try again."
-        read --nchars=1 -P "$(set_color red)Any key to continue..."
+        input.char "$(set_color red)Press any key to continue..."
         scene $sc
     end
 end
