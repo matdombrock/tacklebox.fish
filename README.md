@@ -7,9 +7,15 @@ A collection of (mostly) disconnected small `fish` shell programs for avid angle
 ## Programs
 
 ### [FishFinder](/fishfinder)
+TUI file explorer
 ### [FishFish](/fishfish)
+Fish in fish
 ### [Games](/games)
+Games written in fish
 ### [Reel](/reel)
+Fuzzy package manager
+### [TackleBox](/tbox)
+TUI fuzzy finding launcher
 
 ## Aliases
 
