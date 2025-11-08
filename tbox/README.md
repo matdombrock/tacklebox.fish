@@ -12,8 +12,8 @@ Sort them into categories and fuzzy find them as needed.
 
 ## Environmental variables:
 ```sh
-FF_NO_HEADER=1 # Hide the logo
-FF_CMD_PATH=~/my_commands.fish # Change the command path
+TBOX_NO_HEADER=1 # Hide the logo
+TBOX_CMD_PATH=~/my_commands.fish # Change the command path
 ```
 
 ## Usage

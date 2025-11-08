@@ -1,3 +1,5 @@
+#! /usr/bin/env fish
+
 # Install packages using dnf with fuzzy search via fzf.
 # Never automatically installs the package
 
@@ -12,7 +14,7 @@ if not type -q fzf
     echo "This program requires `fzf`!" && exit 1
 end
 
-set fzf_opts --height=80% --layout=reverse --border --ansi
+set fzf_opts --prompt="reel in $argv: " --height=80% --layout=reverse --border --ansi
 
 function fuzzy_pacman
     function search
@@ -84,7 +86,7 @@ function reel
 end
 
 if not test "$_" = source
-    reel
+    reel $argv
 else
     functions --erase fuzzy_pacman
     functions --erase fuzzy_apt

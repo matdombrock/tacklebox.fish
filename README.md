@@ -17,6 +17,13 @@ Fuzzy package manager
 ### [TackleBox](/tbox)
 TUI fuzzy finding launcher
 
+## Demo
+
+Use `tbox` to load a TUI that can launch these programs:
+```sh
+fish angler.fish
+```
+
 ## Aliases
 
 You can add aliases for most of the useful programs here by running:
@@ -24,6 +31,9 @@ You can add aliases for most of the useful programs here by running:
 ```sh
 source angler.fish
 ```
+
+> [!TIP]
+> You must be inside a `fish` shell to source these aliases.
 
 ### Sourcing vs Alias
 

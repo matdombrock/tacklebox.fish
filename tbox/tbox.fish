@@ -70,10 +70,10 @@ function expand_cmds
 end
 
 set cmd_path $base/tbox_commands.fish
-# Check if we have a FF_COMMANDS_PATH env var
-if set -q FF_CMD_PATH
-    echo overriding command path with $FF_CMD_PATH
-    set cmd_path $FF_CMD_PATH
+# Check if we have a TBOX_CMD_PATH env var
+if set -q TBOX_CMD_PATH
+    echo overriding command path with $TBOX_CMD_PATH
+    set cmd_path $TBOX_CMD_PATH
 end
 # Check if command file exists
 if test -f $cmd_path
@@ -159,7 +159,7 @@ function run
     eval $cmd
 end
 
-if not set -q FF_NO_HEADER; or test $FF_NO_HEADER != 1
+if not set -q TBOX_NO_HEADER; or test $TBOX_NO_HEADER != 1
     echo "\
 $(set_color blue   )    █$(set_color green )▗▄▄▄▖▗▄▄▖  ▗▄▖ ▗▖  $(set_color blue   ) ▗▖
 $(set_color magenta)  ███$(set_color yellow)  █  ▐▌ ▐▌▐▌ ▐▌ ▝▚▞$(set_color magenta)▞▘ 
