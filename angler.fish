@@ -6,8 +6,9 @@ if test "$_" = source
     set -l base (dirname (realpath (status --current-filename)))
 
     alias :adv="$base/games/adv.fish"
-    alias :fishfinder="cd ($base/fishfinder/finder.fish)"
-    alias :ff="cd ($base/fishfinder/finder.fish)"
+    alias :fishfinder="$base/fishfinder/finder.fish"
+    alias :ff="$base/fishfinder/finder.fish"
+    alias :ffcd="$base/fishfinder/finder.fish" # Breaks editing
     alias :tbox="$base/tbox/tbox.fish"
     alias :fishfish="$base/fishfish/fish.fish"
     alias :reel="$base/reel/reel.fish"

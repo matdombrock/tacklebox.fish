@@ -89,10 +89,13 @@ function fishfinder
         return
     else if test -f $sel
         if set -q VISUAL
+            echo "Opening file with VISUAL editor: $VISUAL"
             $VISUAL $sel
         else if set -q EDITOR
+            echo "Opening file with EDITOR: $EDITOR"
             $EDITOR $sel
         else
+            echo "No editor set. Opening file with 'less'."
             less $sel
         end
     end
