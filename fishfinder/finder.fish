@@ -4,7 +4,9 @@
 # It allows navigation through directories and opening files with the default editor.
 
 # TODO:
-# If the file is executable, offer to run it vs edit it.
+# - If the file is executable, offer to run it vs edit it.
+# - Its not possible to leave the shell in the final dir unluess this is sourced
+#   You can do something like `cd (fishfinder)` from the shell but that breaks editing files
 
 function fishfinder
     # Check for fzf

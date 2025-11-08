@@ -9,12 +9,17 @@
 # 2) filter - Filter the selected package info down to just the name
 # 3) install - Install the target package
 
+# TODO: 
+# - Add support for more package managers (e.g., yum, zypper, etc.)
+# - Add an option to show package details before installation
+# - Add an option to uninstall packages
+
 # Check for fzf
 if not type -q fzf
     echo "This program requires `fzf`!" && exit 1
 end
 
-set fzf_opts --prompt="reel in $argv: " --height=80% --layout=reverse --border --ansi
+set fzf_opts --prompt="$(set_color cyan)reel in $(set_color bryellow)$argv$(set_color cyan): " --height=80% --layout=reverse --border --ansi
 
 function fuzzy_pacman
     function search
