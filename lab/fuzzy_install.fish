@@ -2,6 +2,11 @@
 
 set query $argv
 
+# Check for fzf
+if not type -q fzf
+    echo "This program requires `fzf`!" && exit 1
+end
+
 set fzf_opts --height=80% --layout=reverse --border --ansi
 
 function fuzzy_pacman
@@ -23,24 +28,13 @@ end
 
 set mode
 if type -q pacman
-    set mode pacman
+    set mode fuzzy_pacman
 else if type -q apt
-    set mode apt
+    set mode fuzzy_apt
 else if type -q dnf
-    set mode dnf
+    set mode fuzzy_dnf
 else
     echo "No supported package manager found!" && exit 1
 end
 
-set fuzzy_mode fuzzy_$mode
-
-function fuzzy_install
-    set -l query $argv
-    # Check for fzf
-    if not type -q fzf
-        echo "This program requires `fzf`!" && exit 1
-    end
-    # This is basically magic!
-    $fuzzy_mode $query
-end
-fuzzy_install $query
+$mode $query

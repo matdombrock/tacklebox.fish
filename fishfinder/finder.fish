@@ -2,6 +2,13 @@
 
 source ../lib/dict.fish
 
+# Check for fzf
+if not type -q fzf
+    echo "This program requires `fzf`!"
+    echo "Please install it and try again."
+    exit 1
+end
+
 set query_str $argv
 
 set back_str " back"
