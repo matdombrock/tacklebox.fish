@@ -85,6 +85,7 @@ function expand_cmds
     end
 end
 
+# Load commands
 set cmd_path $base/tbox_commands.fish
 # Check if we have a TBOX_CMD_PATH env var
 if set -q TBOX_CMD_PATH
