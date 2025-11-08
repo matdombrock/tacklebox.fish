@@ -2,6 +2,8 @@
 
 A collection of (mostly) disconnected small `fish` shell programs for avid anglers.
 
+![angler fish](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Lophius_piscatorius_MHNT.jpg/2880px-Lophius_piscatorius_MHNT.jpg)
+
 ## Aliases
 
 You can add aliases for most of the useful programs here by running:
