@@ -1,7 +1,12 @@
 #! /usr/bin/env fish
 
 # TODO:
-# - Dont show back when in one category mode
+# - This is hard to refactor and clean up
+#   Ideally there is no global state (cmds, categories)
+#   add_cmd is called from another file which is sourced
+#   but it modifies global state
+#   Maybe the command file could define a function that returns
+#   a list of commands and categories instead of calling add_cmd directly#   Or maybe it just returns text which is parsed here
 
 set base (dirname (realpath (status --current-filename)))
 source $base/../lib/dict.fish
@@ -134,18 +139,21 @@ function run
         end
     end
 
-    set cmd_str (expand_cmds $cat_str $is_single_cat | fzf --query=$query_str $fzf_opts --prompt="$(set_color green)$cat_str/$(set_color blue)command > " --preview 'echo {}' --preview-window down:5:hidden:wrap --bind '?:toggle-preview')
+    # Select command
+    set cmd_str (expand_cmds $cat_str $is_single_cat | fzf --query=$query_str $fzf_opts \
+      --prompt="$(set_color green)$cat_str/$(set_color blue)command > " --preview 'echo {}' --preview-window down:5:hidden:wrap --bind '?:toggle-preview')
 
+    # Check for empty
     if test -z "$cmd_str"
         return
     end
 
-    # check for exit
+    # Check for exit
     if test $cmd_str = $exit_str
         return
     end
 
-    # check for back
+    # Check for back
     # NOTE: We could reset the query_str here if we wanted to
     if test $cmd_str = $back_str
         run
