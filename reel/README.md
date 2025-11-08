@@ -1,4 +1,4 @@
-# FuzzyInstall
+# Reel 
 
 Install packages using dnf with fuzzy search via fzf.
 

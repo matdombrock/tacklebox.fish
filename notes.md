@@ -1,3 +1,5 @@
+! angler.fish
+
 reel.fish
 reel.big.fish
 fishfinder is a good name for seer. It can be shorted to ff. 

@@ -1,5 +1,7 @@
 # tacklebox.fish
 
+> A **tackle box** is a container used by *anglers* to organize, store, and transport fishing gear and accessories.
+
 A collection of (mostly) disconnected small Fish shell programs
 
 ## Aliases
@@ -7,7 +9,7 @@ A collection of (mostly) disconnected small Fish shell programs
 You can add aliases for most of the useful programs here by running:
 
 ```sh
-source alias.sh
+source alias.fish
 ```
 
 ### Sourcing vs Alias

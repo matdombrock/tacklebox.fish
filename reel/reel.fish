@@ -7,8 +7,6 @@
 # 2) filter - Filter the selected package info down to just the name
 # 3) install - Install the target package
 
-set query $argv
-
 # Check for fzf
 if not type -q fzf
     echo "This program requires `fzf`!" && exit 1
@@ -70,21 +68,26 @@ function fuzzy_dnf
     install (filter (string split '.' $search_res))[1]
 end
 
-set mode
-if type -q pacman
-    set mode fuzzy_pacman
-else if type -q apt
-    set mode fuzzy_apt
-else if type -q dnf
-    set mode fuzzy_dnf
-else
-    echo "No supported package manager found!" && exit 1
+function reel
+    set query $argv
+    set mode
+    if type -q pacman
+        set mode fuzzy_pacman
+    else if type -q apt
+        set mode fuzzy_apt
+    else if type -q dnf
+        set mode fuzzy_dnf
+    else
+        echo "No supported package manager found!" && exit 1
+    end
+    $mode $query
 end
 
 if not test "$_" = source
-    $mode $query
+    reel
 else
     functions --erase fuzzy_pacman
     functions --erase fuzzy_apt
     functions --erase fuzzy_dnf
+    set -e fzf_opts
 end
