@@ -743,7 +743,27 @@ function greet_echo
     set -l fg '▓'
     # set -l bg '░'
     set -l bg '~'
-    echo $greeting_art | string split \n | sed -n $pos | sed -e "s/X/$fg/g" -e "s/ /$bg/g"
+
+    set width (tput cols)
+    if test $width -lt 40
+        return
+    end
+    set art_width 41
+    set padding (math floor (math "($width - $art_width) / 2"))
+    for i in (seq $padding)
+        echo -n $bg
+    end
+
+    echo -n $greeting_art | string split \n | sed -n $pos | sed -e "s/X/$fg/g" -e "s/ /$bg/g" | tr \n x | sed -e s/x//g
+
+    for i in (seq $padding)
+        echo -n $bg
+    end
+    # If padding * 2 + art_width < width, add one more space
+    if test (math "$padding * 2 + $art_width") != $width
+        echo -n $bg
+    end
+    echo
 end
 
 function greet
