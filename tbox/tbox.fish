@@ -107,11 +107,18 @@ end
 source $cmd_path
 
 function header
+    function gill
+        set width (tput cols)
+        set right (math $width - 27)
+        for i in (seq 1 $right)
+            echo -n "<"
+        end
+    end
     if not set -q TBOX_NO_HEADER; or test $TBOX_NO_HEADER != 1
         echo "\
 $(set_color blue   )    █$(set_color green )▗▄▄▄▖▗▄▄▖  ▗▄▖ ▗▖  $(set_color blue   ) ▗▖
-$(set_color magenta)  ███$(set_color yellow)  █  ▐▌ ▐▌▐▌ ▐▌ ▝▚▞$(set_color magenta)▞▘ 
-$(set_color magenta) ██ █$(set_color yellow)  █  ▐▛▀▚▖▐▌ ▐▌  ▐▌$(set_color magenta)▌  
+$(set_color magenta)  ███$(set_color yellow)  █  ▐▌ ▐▌▐▌ ▐▌ ▝▚▞$(set_color magenta)▞▘<$(gill)
+$(set_color magenta) ██ █$(set_color yellow)  █  ▐▛▀▚▖▐▌ ▐▌  ▐▌$(set_color magenta)▌<<$(gill)
 $(set_color blue   )  ███$(set_color green )  █  ▐▙▄▞▘▝▚▄▞▘▗▞▘▝$(set_color blue   )▝▚▖
 " | string replace -a ' ' \~
     end
