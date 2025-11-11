@@ -60,16 +60,17 @@ end'
     if type -q bat
         set file_viewer 'bat --plain --color=always'
     end
-    set fzf_preview 'fish -c "
-    if test -f {}; 
-        echo (set_color --bold bryellow)file(set_color normal):
-        '$file_viewer' {}; 
-    else if test -d {}; 
-        echo (set_color --bold brred)directory(set_color normal):
-        ls -A {}; 
-    else; 
-        echo \"Not a file or directory\"; 
-    end
+    set fzf_preview '\
+fish -c "
+if test -f {}; 
+    echo (set_color --bold bryellow)file(set_color normal):
+    '$file_viewer' {}; 
+else if test -d {}; 
+    echo (set_color --bold brred)directory(set_color normal):
+    ls -A {}; 
+else; 
+    echo \"Not a file or directory\"; 
+end
 "'
 
     # We use a temp file to handle special exit commands
@@ -90,7 +91,7 @@ end'
         --bind=ctrl-r:"reload($lsx_string_full)"
 
     function keep_finding
-        set confirm (input.char (set_color bryellow)"Keep finding? (y/n): ")
+        set confirm (input.char (set_color brcyan)">>> Keep finding? (y/n): ")
         if test $confirm = y
             fishfinder
         else
