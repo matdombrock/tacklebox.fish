@@ -89,6 +89,15 @@ end'
         --bind=alt-d:"execute(rm -rf {})+reload($lsx_string_full)" \
         --bind=ctrl-r:"reload($lsx_string_full)"
 
+    function keep_finding
+        set confirm (input.char (set_color bryellow)"Keep finding? (y/n): ")
+        if test $confirm = y
+            fishfinder
+        else
+            echo (pwd)
+        end
+    end
+
     # Get the selection
     rm -f $special_exit_path
     set sel (lsx $exit_msg $home_msg $up_msg | fzf $fzf_options)
@@ -112,10 +121,12 @@ end'
         if test -d "$sel"
             # This is a directory
             ls -A $sel
+            keep_finding
             return
         end
         set fv_cmd (string split ' ' $file_viewer)
         $fv_cmd $sel
+        keep_finding
         return
     end
     # Just print the file path
@@ -132,6 +143,7 @@ end'
         else
             echo "$sel is not executable."
         end
+        keep_finding
         return
     end
     # Delete the file
@@ -187,12 +199,18 @@ end'
         if set -q VISUAL
             echo "Opening file with VISUAL editor: $VISUAL"
             $VISUAL $sel
+            keep_finding
+            return
         else if set -q EDITOR
             echo "Opening file with EDITOR: $EDITOR"
             $EDITOR $sel
+            keep_finding
+            return
         else
             echo "No editor set. Opening file with 'less'."
             less $sel
+            keep_finding
+            return
         end
     end
 end
