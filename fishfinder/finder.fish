@@ -101,7 +101,7 @@ if test -f (clean_sel);
     '$file_viewer' (clean_sel); 
 else if test -d (clean_sel); 
     echo (set_color --bold brred)directory(set_color normal):
-    ls -A (clean_sel); 
+    ls --group-directories-first -A1 -F --color=always (clean_sel) 2>/dev/null; 
 else; 
     echo \"Not a file or directory\"; 
 end
