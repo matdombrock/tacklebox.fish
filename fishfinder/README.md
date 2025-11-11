@@ -2,7 +2,14 @@
 
 FishFinder is a terminal file explorer with fuzzy searching using fzf.
 
-# Modes:
+## Requires
+- `fzf` 
+- `lib.input` (local dep)
+
+> [!TIP]
+> This tool will try to use `bat` or `batcat` to preview files if installed. If neither can be found it falls back to `cat`.
+
+## Modes:
 You can enter a special mode by sending an argument to fishfinder
 - No argument: Normal mode, shows files and directories
 - explode: Shows all files recursively from current directory
@@ -16,7 +23,7 @@ You can enter a special mode by sending an argument to fishfinder
 > cd (fishfinder l)
 > ```
 
-# Keybinds:
+## Keybinds:
 - Right Arrow: Enter directory or select file
 - Left Arrow: Go up one directory
 - Ctrl-V: View file or directory listing
