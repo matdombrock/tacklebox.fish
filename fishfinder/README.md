@@ -6,7 +6,7 @@ FishFinder is a terminal file explorer with fuzzy searching using fzf.
 
 ## Requires
 - `fzf` 
-- `../lib/input.fish` 
+- `../_lib/input.fish` 
 
 > [!TIP]
 > This tool will try to use `bat` or `batcat` to preview files if installed. If neither can be found it falls back to `cat`.

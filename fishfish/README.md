@@ -5,7 +5,7 @@ Prints a random fish name and description
 ![screenshot](_doc/screenshot.png)
 
 ## Requires
-- `../lib/dict.fish`
+- `../_lib/dict.fish`
 
 ## Usage
 - Use `--no-greet` to supress the greeting graphics

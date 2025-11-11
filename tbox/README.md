@@ -11,7 +11,7 @@ Sort them into categories and fuzzy find them as needed.
 ## Requires
 
 - `fzf`
-- `../lib/dict.fish`
+- `../_lib/dict.fish`
 
 ## Environmental variables:
 ```sh
