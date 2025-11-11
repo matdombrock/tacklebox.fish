@@ -90,6 +90,7 @@ end
         --bind=alt-d:"execute(rm -rf {})+reload($lsx_string_full)" \
         --bind=ctrl-r:"reload($lsx_string_full)"
 
+    # Ask if we want to keep finding
     function keep_finding
         set confirm (input.char (set_color brcyan)">>> Keep finding? (y/n): ")
         if test $confirm = y
