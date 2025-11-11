@@ -5,12 +5,20 @@ if test "$_" = source
     # Automatically determine the base dir
     set -l base (dirname (realpath (status --current-filename)))
 
+    # Adventure game
     alias :adv="$base/games/adv.fish"
+    # Launch FishFinder (fuzzy file explorer)
     alias :fishfinder="$base/fishfinder/finder.fish"
     alias :ff="$base/fishfinder/finder.fish"
-    alias :ffl="$base/fishfinder/finder_lp.fish"
+    # Echo last FishFinder path
+    alias :ffl="cd ($base/fishfinder/finder.fish l)"
+    # Launch fish finder and go to the last dir
+    alias :ffg=":ff && :ffl"
+    # Demo TackleBox
     alias :tbox="$base/tbox/tbox.fish"
+    # Fish in Fish
     alias :fishfish="$base/fishfish/fish.fish"
+    # Launch Reel (fuzzy package manager)
     alias :reel="$base/reel/reel.fish"
 
     echo set aliases:
