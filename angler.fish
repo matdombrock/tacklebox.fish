@@ -11,9 +11,9 @@ if test "$_" = source
     alias :fishfinder="$base/fishfinder/finder.fish"
     alias :ff="$base/fishfinder/finder.fish"
     # Echo last FishFinder path
-    alias :ffl="cd ($base/fishfinder/finder.fish l)"
-    # Launch fish finder and go to the last dir
-    alias :ffg=":ff && :ffl"
+    alias :ffl=":ff l"
+    # Launch fish finder and go to the final dir
+    alias :ffg=":ff && cd ($base/fishfinder/finder.fish l)"
     # Demo TackleBox
     alias :tbox="$base/tbox/tbox.fish"
     # Fish in Fish
