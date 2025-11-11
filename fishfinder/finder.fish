@@ -12,7 +12,7 @@ function fishfinder
 
     # Check for fzf
     if not type -q fzf
-        echo "This program requires `fzf`!" && exit 1
+        echo "This program requires 'fzf'!" && exit 1
     end
 
     # Write data to path

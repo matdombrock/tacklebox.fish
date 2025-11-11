@@ -13,7 +13,7 @@ source $base/../_lib/dict.fish
 
 # Check for fzf
 if not type -q fzf
-    echo "This program requires `fzf`!"
+    echo "This program requires 'fzf'!"
     echo "Please install it and try again."
     exit 1
 end

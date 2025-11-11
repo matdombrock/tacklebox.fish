@@ -16,7 +16,7 @@
 
 # Check for fzf
 if not type -q fzf
-    echo "This program requires `fzf`!" && exit 1
+    echo "This program requires 'fzf'!" && exit 1
 end
 
 set fzf_opts --prompt="$(set_color cyan)reel in $(set_color bryellow)$argv$(set_color cyan): " --height=80% --layout=reverse --border --ansi
