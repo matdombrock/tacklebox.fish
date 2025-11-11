@@ -3,7 +3,7 @@
 A collection of (mostly) disconnected small `fish` shell programs for avid anglers.
 
 ![angler fish](_doc/anglerfish.png)
-> Image: Average angler.fish user
+> Image: Average fish user
 
 ## Programs
 
