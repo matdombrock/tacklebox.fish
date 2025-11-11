@@ -108,7 +108,6 @@ end
         --bind=ctrl-r:"reload(fish -c '$lsx_string; lsx')" \
         --bind=\::"execute(echo cmd:{} >> $special_exit_path)+abort"
 
-    # --bind=ctrl-r:"reload(fish -c 'function xx; ls; end; xx')"
     # Ask if we want to keep finding
     function keep_finding
         echo
