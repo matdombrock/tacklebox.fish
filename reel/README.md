@@ -1,6 +1,16 @@
 # Reel 
 
-Install packages using dnf with fuzzy search via fzf.
+![screenshot](doc/screenshot)
+
+Install packages with fuzzy search via fzf.
+
+## Requires
+- `fzf`
+
+## Supports
+- `pacman`
+- `dnf`
+- `apt`
 
 Never automatically installs the package
 

@@ -6,9 +6,12 @@ Keep your less commonly used commands in tbox.
 
 Sort them into categories and fuzzy find them as needed.
 
+![screenshot](docs/screenshot)
+
 ## Requires
 
 - `fzf`
+- `../lib/dict.fish`
 
 ## Environmental variables:
 ```sh
