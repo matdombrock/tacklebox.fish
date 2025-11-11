@@ -4,17 +4,6 @@
 # FishFinder is a terminal file explorer with fuzzy searching using fzf.
 #
 
-# TODO:
-# - More file operations: copy, move etc
-# - Operation for `xdg-open` for viewing files with default applications
-# - Option to execute with args, maybe should be the default for exec?
-#   Could drop to > [cmd] ...
-# - The cmd: function should use pwd if none selected
-# - Goto command to jump to a specific directory
-# - This is becoming hard to maintain
-#   It may be easier if implemented in a way that cant be sourced cleanly
-#   In other words, not as a single top level function
-
 source (dirname (realpath (status --current-filename)))/../_lib/input.fish
 
 function fishfinder

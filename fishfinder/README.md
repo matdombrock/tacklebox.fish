@@ -40,3 +40,15 @@ You can enter a special mode by sending an argument to fishfinder
 - Shift-Down Arrow: Scroll preview down
 - CTRL-Q: Quit
 
+## Goals
+- More file operations: copy, move etc
+- Operation for `xdg-open` for viewing files with default applications
+    - Should also support `open` for macOS
+- Option to execute with args, maybe should be the default for exec?
+    - Could drop to > [cmd] ...
+- Goto command to jump to a specific directory
+    - Maybe replace the 'home' option
+- This is becoming hard to maintain
+    - It may be easier if implemented in a way that cant be sourced cleanly
+    - In other words, not as a single top level function
+
