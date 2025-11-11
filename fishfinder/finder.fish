@@ -241,6 +241,10 @@ end
     # Handle cmd: Execute command on file
     if test (string match "cmd:*" $sel)
         set sel (string replace "cmd:" "" $sel)
+        # if $sel is not file or dir use pwd
+        if not test -f $sel; and not test -d $sel
+            set sel (pwd)
+        end
         set_color cyan
         echo "Enter command (use \$p as placeholder for '$sel'):"
         set cmd (input.line "> " | string replace -a \$p $sel)
