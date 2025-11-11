@@ -154,7 +154,7 @@ end
         set sel (string replace "view:" "" $sel)
         if test -d "$sel"
             # This is a directory
-            ls -A $sel
+            ls -l -A $sel
             keep_finding
             return
         else if test -f $sel
@@ -166,7 +166,6 @@ end
             # The user has likely selected a meta option by mistake
             fishfinder
             return
-
         end
     end
 
