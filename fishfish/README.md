@@ -2,7 +2,7 @@
 
 Prints a random fish name and description
 
-![screenshot](doc/screenshot.png)
+![screenshot](_doc/screenshot.png)
 
 ## Requires
 - `../lib/dict.fish`

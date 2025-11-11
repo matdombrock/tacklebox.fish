@@ -1,6 +1,6 @@
 # Reel 
 
-![screenshot](doc/screenshot.png)
+![screenshot](_doc/screenshot.png)
 
 Install packages with fuzzy search via fzf.
 

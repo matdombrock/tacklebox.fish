@@ -6,7 +6,7 @@ Keep your less commonly used commands in tbox.
 
 Sort them into categories and fuzzy find them as needed.
 
-![screenshot](doc/screenshot.png)
+![screenshot](_doc/screenshot.png)
 
 ## Requires
 

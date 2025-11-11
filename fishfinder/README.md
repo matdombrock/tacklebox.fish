@@ -2,7 +2,7 @@
 
 FishFinder is a terminal file explorer with fuzzy searching using fzf.
 
-![screenshot](doc/screenshot.png)
+![screenshot](_doc/screenshot.png)
 
 ## Requires
 - `fzf` 

@@ -13,7 +13,7 @@
 #   It may be easier if implemented in a way that cant be sourced cleanly
 #   In other words, not as a single top level function
 
-source (dirname (realpath (status --current-filename)))/../lib/input.fish
+source (dirname (realpath (status --current-filename)))/../_lib/input.fish
 
 function fishfinder
 

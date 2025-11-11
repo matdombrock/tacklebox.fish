@@ -9,7 +9,7 @@
 #   a list of commands and categories instead of calling add_cmd directly#   Or maybe it just returns text which is parsed here
 
 set base (dirname (realpath (status --current-filename)))
-source $base/../lib/dict.fish
+source $base/../_lib/dict.fish
 
 # Check for fzf
 if not type -q fzf

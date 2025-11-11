@@ -1,8 +1,8 @@
-# angler.fish
+# [angler](https://en.wikipedia.org/wiki/Angling).[fish](https://en.wikipedia.org/wiki/Anglerfish)
 
 A collection of (mostly) disconnected small `fish` shell programs for avid anglers.
 
-![angler fish](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Lophius_piscatorius_MHNT.jpg/2880px-Lophius_piscatorius_MHNT.jpg)
+![angler fish](_doc/anglerfish.png)
 
 ## Programs
 
