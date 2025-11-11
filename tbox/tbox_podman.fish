@@ -1,0 +1,5 @@
+add_cmd pm "list containers" "podman container ls"
+add_cmd pm "list all containers" "podman container ls -a"
+add_cmd pm "list images" "podman image ls"
+add_cmd pm "list volumes" "podman volume ls"
+add_cmd pm "list pods" "podman pod ls"
