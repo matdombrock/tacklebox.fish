@@ -2,6 +2,8 @@
 
 FishFinder is a terminal file explorer with fuzzy searching using fzf.
 
+![screenshot](doc/ff_screenshot.png)
+
 ## Requires
 - `fzf` 
 - `lib.input` (local dep)
@@ -12,8 +14,8 @@ FishFinder is a terminal file explorer with fuzzy searching using fzf.
 ## Modes:
 You can enter a special mode by sending an argument to fishfinder
 - No argument: Normal mode, shows files and directories
-- explode: Shows all files recursively from current directory
-- l: Last path mode, echoes the last selected path from fishfinder and exits
+- `explode`: Shows all files recursively from current directory
+- `l`: Last path mode, echoes the last selected path from fishfinder and exits
 
 > [!TIP]
 > When this program exists it will write a temporary file that contains the last selected path.
