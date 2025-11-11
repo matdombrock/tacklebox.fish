@@ -1,6 +1,6 @@
 #! /usr/bin/env fish
 
-source ../lib/input.fish
+source (dirname (realpath (status --current-filename)))/../_lib/input.fish
 
 set secret (math (random)%100 + 1)
 set attempts 0

@@ -1,6 +1,6 @@
 #! /usr/bin/env fish
 
-source ../lib/input.fish
+source (dirname (realpath (status --current-filename)))/../_lib/input.fish
 
 function draw_card
     set cards 2 3 4 5 6 7 8 9 10 11
