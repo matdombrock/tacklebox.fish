@@ -53,6 +53,8 @@ function fishfinder
 
     # NOTE: Passing functions from our script into fzf is tricky
     # The easiest way is to define them as strings and eval them inside fzf
+    # Force string functions to use fish or it will use the default shell which may not be fish
+    # This could also be done by just writing it as posix sh but this is a fish script after all
     set lsx_fn '\
 function lsx
     # Since these vars should not be global, we must pass them as args
@@ -81,11 +83,11 @@ end'
     eval $lsx_fn
 
     # Set the fzf preview command
-    # Force this to use fish or it will use the default shell which may not be fish
-    # This could also be done by just writing it as posix sh
     set file_viewer cat
     if type -q bat
         set file_viewer 'bat --plain --color=always'
+    else if type -q batcat # Some systems (e.g. Debian) use batcat instead of bat
+        set file_viewer 'batcat --plain --color=always'
     end
     set fzf_preview_fn '\
 fish -c "
