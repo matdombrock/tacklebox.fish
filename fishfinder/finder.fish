@@ -10,10 +10,10 @@
 # - Ctrl-V: View file or directory listing and exit
 # - Ctrl-P: Print the selected file path and exit
 # - Ctrl-E: Execute the selected file if it is executable and exit
+# - Ctrl-X: Toggle explode mode (show all files recursively from current directory)
 # - Ctrl-D: Delete the selected file or directory with confirmation and reload
 # - Alt-D:  Delete the selected file or directory with confirmation and reload
 # - Ctrl-R: Reload the current directory listing
-# - Ctrl-X: Toggle explode mode (show all files recursively from current directory)
 # - : (colon): Execute a custom command on the selected file
 
 # TODO:
