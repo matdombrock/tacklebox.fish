@@ -80,12 +80,15 @@ end'
     end
     set fzf_preview '\
 fish -c "
-if test -f {}; 
+# Since we use the -F flag on ls we might have a trailing asterisk
+  set sel (echo {} | sed \'s/[*\/]$//\')
+  echo sel:$sel
+if test -f (echo {} | sed \'s/[*\/]$//\'); 
     echo (set_color --bold bryellow)file(set_color normal):
-    '$file_viewer' {}; 
-else if test -d {}; 
+    '$file_viewer' (echo {} | sed \'s/[*\/]$//\'); 
+else if test -d (echo {} | sed \'s/[*\/]$//\'); 
     echo (set_color --bold brred)directory(set_color normal):
-    ls -A {}; 
+    ls -A (echo {} | sed \'s/[*\/]$//\'); 
 else; 
     echo \"Not a file or directory\"; 
 end
