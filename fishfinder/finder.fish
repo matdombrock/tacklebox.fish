@@ -82,15 +82,15 @@ end'
 fish -c "
 # Since we use the -F flag on ls we might have a trailing asterisk
 # For some reason (???) setting vars doesnt work here so we use a function instead
-function clean
+function clean_sel
   echo {} | sed \'s/[*\/]$//\'
 end
-if test -f (clean); 
+if test -f (clean_sel); 
     echo (set_color --bold bryellow)file(set_color normal):
-    '$file_viewer' (clean); 
-else if test -d (clean); 
+    '$file_viewer' (clean_sel); 
+else if test -d (clean_sel); 
     echo (set_color --bold brred)directory(set_color normal):
-    ls -A (clean); 
+    ls -A (clean_sel); 
 else; 
     echo \"Not a file or directory\"; 
 end
@@ -152,21 +152,22 @@ end
     # Just view the file / directory
     if test (string match "view:*" $sel)
         set sel (string replace "view:" "" $sel)
-        if not test -f $sel
-            # The user has likely selected a meta option by mistake
-            fishfinder
-            return
-        end
         if test -d "$sel"
             # This is a directory
             ls -A $sel
             keep_finding
             return
+        else if test -f $sel
+            set fv_cmd (string split ' ' $file_viewer)
+            $fv_cmd $sel
+            keep_finding
+            return
+        else
+            # The user has likely selected a meta option by mistake
+            fishfinder
+            return
+
         end
-        set fv_cmd (string split ' ' $file_viewer)
-        $fv_cmd $sel
-        keep_finding
-        return
     end
 
     # Just print the file path
