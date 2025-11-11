@@ -17,57 +17,61 @@ source (dirname (realpath (status --current-filename)))/../lib/input.fish
 
 function fishfinder
 
-    set mode $argv[1]
+    set mode $argv[1] # Optional mode argument
 
     # Check for fzf
     if not type -q fzf
         echo "This program requires `fzf`!" && exit 1
     end
 
-    # Define path to last path file
-    # NOTE: Some systems may not have /tmp so use $TMPDIR if set
-    set ff_lp_path /tmp/ff_lp
-    if test -d "$TMPDIR"
-        set ff_lp_path $TMPDIR/ff_lp
+    # Write data to path
+    function write
+        set -l data $argv[1]
+        set -l path $argv[2]
+        echo $data >$path
     end
 
-    # If we have 'l' mode just echo last path and exit
-    if test "$mode" = l
-        if test -f $ff_lp_path
-            cat $ff_lp_path
+    # Ask if we want to keep finding
+    function keep_finding
+        set -l ff_lp_path $argv[1]
+        echo
+        set -l confirm (input.char (set_color brcyan)">>> Keep finding? (Y/n): ")
+        if test $confirm = y; or test $confirm = Y; or test $confirm = ''
+            fishfinder
+        else
+            write (pwd) $ff_lp_path
         end
-        return
     end
 
     # Define special messages
     # NOTE: If the icons dont show, you need to use a nerd font in your terminal
-    set exit_msg ' exit'
-    set home_msg ' home'
-    set up_msg ' .. up'
-    set explode_msg ' explode'
-    set unexplode_msg ' unexplode'
+    set exit_str ' exit'
+    set home_str ' home'
+    set up_str ' .. up'
+    set explode_str ' explode'
+    set unexplode_str ' unexplode'
 
-    # Passing functions from our script into fzf is tricky
+    # NOTE: Passing functions from our script into fzf is tricky
     # The easiest way is to define them as strings and eval them inside fzf
     set lsx_fn '\
 function lsx
     # Since these vars should not be global, we must pass them as args
     set explode_mode $argv[1]
     set_color yellow
-    echo '$exit_msg'
+    echo '$exit_str'
     if test "$explode_mode" = explode
         set_color yellow
-        echo '$unexplode_msg'
+        echo '$unexplode_str'
         set_color normal
         echo
         find (pwd) -type f 2>/dev/null | sed "s|^$(pwd)/||"
         return
     end
     set_color yellow
-    echo '$home_msg'
-    echo '$explode_msg'
+    echo '$home_str'
+    echo '$explode_str'
     set_color green
-    echo '$up_msg'
+    echo '$up_str'
     set_color normal
     echo
     ls --group-directories-first -A1 -F --color=always 2>/dev/null
@@ -101,8 +105,19 @@ else;
 end
 "'
 
+    # Define path to ff_lp temp file
+    set ff_lp_path /tmp/ff_lp
+    # NOTE: Some systems may not have /tmp so use $TMPDIR if set
+    if test -d "$TMPDIR"
+        set ff_lp_path $TMPDIR/ff_lp
+    end
+
     # We use a temp file to handle special exit commands
     set special_exit_path /tmp/ff_special_exit
+    # NOTE: Some systems may not have /tmp so use $TMPDIR if set
+    if test -d "$TMPDIR"
+        set special_exit_path $TMPDIR/ff_special_exit
+    end
 
     # Set up fzf options
     set fzf_options "--prompt=$(prompt_pwd)/" --ansi --layout=reverse --height=80% --border \
@@ -118,27 +133,23 @@ end
         --bind=ctrl-r:"reload(fish -c '$lsx_fn; lsx')" \
         --bind=\::"execute(echo cmd:{} >> $special_exit_path)+abort"
 
-    # Write data to path
-    function write
-        set -l data $argv[1]
-        set -l path $argv[2]
-        echo $data >$path
+    #
+    # Start the main logic
+    #
+
+    # If we have 'l' mode just echo last path and exit
+    if test "$mode" = l
+        if test -f $ff_lp_path
+            cat $ff_lp_path
+        end
+        return
     end
 
-    # Ask if we want to keep finding
-    function keep_finding
-        set -l ff_lp_path argv[1]
-        echo
-        set -l confirm (input.char (set_color brcyan)">>> Keep finding? (Y/n): ")
-        if test $confirm = y; or test $confirm = Y; or test $confirm = ''
-            fishfinder
-        else
-            write (pwd) $ff_lp_path
-        end
-    end
+    # Clean up any previous special exit command
+    # Guards against false positives
+    rm -f $special_exit_path
 
     # Get the selection
-    rm -f $special_exit_path
     set sel (lsx $mode | fzf $fzf_options)
 
     # Check if a special exit command was written
@@ -243,32 +254,32 @@ end
     #
 
     # Handle exit
-    if test "$sel" = "$exit_msg"
+    if test "$sel" = "$exit_str"
         write (pwd) $ff_lp_path
         return
     end
 
     # Handle home directory
-    if test "$sel" = "$home_msg"
+    if test "$sel" = "$home_str"
         cd ~
         fishfinder
         return
     end
 
     # Handle up directory
-    if test "$sel" = "$up_msg"
+    if test "$sel" = "$up_str"
         cd ..
         fishfinder
         return
     end
 
     # Handle explode
-    if test "$sel" = "$explode_msg"
+    if test "$sel" = "$explode_str"
         fishfinder explode
     end
 
     # Handle unexplode
-    if test "$sel" = "$unexplode_msg"
+    if test "$sel" = "$unexplode_str"
         fishfinder
     end
 
