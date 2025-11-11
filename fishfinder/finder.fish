@@ -34,8 +34,6 @@ function fishfinder
         echo "This program requires `fzf`!" && exit 1
     end
 
-    set ff_lp_path $TMPDIR/ff_lp
-
     # Define special messages
     # NOTE: If the icons dont show, you need to use a nerd font in your terminal
     set exit_msg ' exit'
@@ -115,6 +113,15 @@ end
         --bind=ctrl-r:"reload(fish -c '$lsx_string; lsx')" \
         --bind=\::"execute(echo cmd:{} >> $special_exit_path)+abort"
 
+    # Write the path to tmp
+    function write_lp
+        set ff_lp_path /tmp/ff_lp
+        if test -d "$TMPDIR"
+            set ff_lp_path $TMPDIR/ff_lp
+        end
+        pwd >$ff_lp_path
+    end
+
     # Ask if we want to keep finding
     function keep_finding
         echo
@@ -122,8 +129,7 @@ end
         if test $confirm = y
             fishfinder
         else
-            echo (pwd)
-            echo (pwd) >$ff_lp_path
+            write_lp
         end
     end
 
@@ -227,15 +233,13 @@ end
 
     # Check if sel is null or empty
     if test -z "$sel"
-        echo (pwd)
-        echo (pwd) >$ff_lp_path
+        write_lp
         return
     end
 
     # Handle exit
     if test "$sel" = "$exit_msg"
-        echo (pwd)
-        echo (pwd) >$ff_lp_path
+        write_lp
         return
     end
 
