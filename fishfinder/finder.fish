@@ -8,6 +8,7 @@ source (dirname (realpath (status --current-filename)))/../_lib/input.fish
 
 function fishfinder
 
+
     # Parse arguments
     set fl_explode false
     set fl_minimal false
@@ -78,17 +79,17 @@ function fishfinder
         set -l up_str $argv[6]
         set -l explode_str $argv[7]
         set -l unexplode_str $argv[8]
-        echo_not $fl_minimal "$(set_color -usingle brred)$exit_str"
+        echo_not $fl_minimal "$(set_color -u brred)$exit_str"
         if test "$fl_explode" = true
-            echo_not $fl_minimal "$(set_color -usingle bryellow)$unexplode_str"
+            echo_not $fl_minimal "$(set_color -u bryellow)$unexplode_str"
             set_color normal
             find (pwd) -type f 2>/dev/null | sed "s|^$(pwd)/||"
             return
         end
-        echo_not $fl_minimal "$(set_color -usingle bryellow)$explode_str"
-        echo_not $fl_minimal "$(set_color -usingle brgreen)$goto_str"
-        echo_not $fl_minimal "$(set_color -usingle brmagenta)$back_str"
-        echo_not $fl_minimal "$(set_color -usingle brcyan)$up_str"
+        echo_not $fl_minimal "$(set_color -u bryellow)$explode_str"
+        echo_not $fl_minimal "$(set_color -u brgreen)$goto_str"
+        echo_not $fl_minimal "$(set_color -u brmagenta)$back_str"
+        echo_not $fl_minimal "$(set_color -u brcyan)$up_str"
         set_color normal
         ls --group-directories-first -A1 -F --color=always 2>/dev/null
     end
