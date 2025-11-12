@@ -110,17 +110,12 @@ function fishfinder
     # Set the fzf preview command
     # NOTE: Passing functions from our script into fzf is tricky
     # The easiest way is to define them as strings and eval them inside fzf
-    # Force string functions to use fish or it will use the default shell which may not be fish
-    # This could also be done by just writing it as posix sh but this is a fish script after all
     set fzf_preview_fn '\
-# Since we use the -F flag on ls we might have a trailing asterisk
-# For some reason (???) setting vars doesnt work here so we use a function instead
 function tip;
-  echo -n (set_color brgreen)HELP:\n(set_color bryellow)$argv(set_color normal);
+  echo -n (set_color brgreen) help\n(set_color bryellow)$argv(set_color normal);
 end;
-function clean_sel;
-  echo {} | sed \'s/[*\/]\$//\';
-end;
+# Since we use the -F flag on ls we might have a trailing asterisk
+set clean_sel (echo {} | string replace "*" "");
 if test {} = "'$exit_str'"; 
     tip "Exit back to the shell"; 
 else if test {} = "'$goto_str'"; 
@@ -131,33 +126,33 @@ else if test {} = "'$explode_str'";
     tip "Explode current directory (find . -type f)"; 
 else if test {} = "'$unexplode_str'"; 
     tip "Unexplode current directory";
-else if test -f (clean_sel); 
-    echo (set_color --bold bryellow)file(set_color normal):
-    '$file_viewer' (clean_sel); 
-else if test -d (clean_sel); 
-    echo (set_color --bold brred)directory(set_color normal):
-    ls --group-directories-first -A1 -F --color=always (clean_sel) 2>/dev/null; 
-else if test -L (clean_sel); 
+else if test -f $clean_sel; 
+    echo (set_color --bold bryellow) file(set_color normal):
+    '$file_viewer' $clean_sel; 
+else if test -d $clean_sel; 
+    echo (set_color --bold brred)  directory(set_color normal):
+    ls --group-directories-first -A1 -F --color=always $clean_sel 2>/dev/null; 
+else if test -L $clean_sel; 
     echo (set_color --bold bryellow)symlink(set_color normal):
-    ls -l --color=always (clean_sel) 2>/dev/null;
-else if test -e (clean_sel); 
+    ls -l --color=always $clean_sel 2>/dev/null;
+else if test -e $clean_sel; 
     echo (set_color --bold bryellow)other(set_color normal):
-    ls -l --color=always (clean_sel) 2>/dev/null;
-else if test -S (clean_sel); 
+    ls -l --color=always $clean_sel 2>/dev/null;
+else if test -S $clean_sel; 
     echo (set_color --bold bryellow)socket(set_color normal):
-    ls -l --color=always (clean_sel) 2>/dev/null;
-else if test -p (clean_sel); 
+    ls -l --color=always $clean_sel 2>/dev/null;
+else if test -p $clean_sel; 
     echo (set_color --bold bryellow)pipe(set_color normal):
-    ls -l --color=always (clean_sel) 2>/dev/null;
-else if test -b (clean_sel); 
+    ls -l --color=always $clean_sel 2>/dev/null;
+else if test -b $clean_sel; 
     echo (set_color --bold bryellow)block device(set_color normal):
-    ls -l --color=always (clean_sel) 2>/dev/null;
-else if test -c (clean_sel); 
+    ls -l --color=always $clean_sel 2>/dev/null;
+else if test -c $clean_sel; 
     echo (set_color --bold bryellow)character device(set_color normal):
-    ls -l --color=always (clean_sel) 2>/dev/null;
-else if test -d (clean_sel) = false; and test -f (clean_sel) = false; 
+    ls -l --color=always $clean_sel 2>/dev/null;
+else if test -d $clean_sel = false; and test -f $clean_sel = false; 
     echo (set_color --bold bryellow)non-standard file type(set_color normal):
-    ls -l --color=always (clean_sel) 2>/dev/null;
+    ls -l --color=always $clean_sel 2>/dev/null;
 else; 
     echo No preview available.; 
 end
@@ -181,6 +176,7 @@ end
     set fzf_options "--prompt=$(prompt_pwd)/" --ansi --layout=reverse --height=98% --border \
         --preview="$fzf_preview_fn" --preview-window=right:60%:wrap \
         --bind=right:"accept" \
+        --with-shell="fish -c" \
         --bind=left:"execute(echo 'up:' >> $special_exit_path)+abort" \
         --bind=ctrl-x:"execute(echo 'explode:' >> $special_exit_path)+abort" \
         --bind=ctrl-v:"execute(echo view:{} >> $special_exit_path)+abort" \
