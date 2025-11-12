@@ -5,30 +5,90 @@
 #
 
 source (dirname (realpath (status --current-filename)))/../_lib/input.fish
+source (dirname (realpath (status --current-filename)))/../_lib/dict.fish
+
+# We use a temp file to handle special exit commands
+set special_exit_path /tmp/ff_special_exit
+# NOTE: Some systems may not have /tmp so use $TMPDIR if set
+if test -d "$TMPDIR"
+    set special_exit_path $TMPDIR/ff_special_exit
+end
+
+# A function for setting up custom keybinds
+# Must exist out of the main loop to avoid reloading on recursion
+set ff_kb
+function kb
+    set -l action_id $argv[1]
+    set -l input $argv[2]
+    set -l action ''
+    function spec
+        set -l cmd $argv[1]
+        echo "execute(echo $cmd >> $special_exit_path)+abort"
+    end
+    if test $action_id = accept
+        set action accept
+    else if test $action_id = abort
+        set action abort
+    else if test $action_id = up
+        set action (spec "up:")
+    else if test $action_id = explode
+        set action (spec "explode:")
+    else if test $action_id = view
+        set action (spec "view:{}")
+    else if test $action_id = goto
+        set action (spec "goto:")
+    else if test $action_id = last
+        set action (spec "last:")
+    else if test $action_id = print
+        set action (spec "print:{}")
+    else if test $action_id = exec
+        set action (spec "exec:{}")
+    else if test $action_id = open
+        set action (spec "open:{}")
+    else if test $action_id = copy
+        set action (spec "copy:{}")
+    else if test $action_id = del
+        set action (spec "del:{}")
+    else if test $action_id = delquick
+        set action (spec "delquick:{}")
+    else if test $action_id = reload
+        set action (spec "reload:")
+    else if test $action_id = cmd
+        set action (spec "cmd:{}")
+    else if test $action_id = hidden
+        set action (spec "hidden:")
+    end
+    set ff_kb $ff_kb --bind="$input:$action"
+end
+
+# Check if we have an FF_KB environment variable
+# If so, load keybinds from there
+set ff_kb_path (dirname (realpath (status --current-filename)))/keybinds.fish
+if test -n "$FF_KB"
+    set ff_kb_path $FF_KB
+end
+# Load keybinds
+source $ff_kb_path
 
 function fishfinder
 
-    # Parse arguments
-    set fl_explode false
-    set fl_minimal false
-    set fl_last false
+    # Parse arguments, flags is a `dict` type
+    set flags explode=false minimal=false last=false
     for arg in $argv
         if test "$arg" = explode; or test "$arg" = e
-            set fl_explode true
+            set flags (dict.set explode true $flags)
         else if test "$arg" = minimal; or test "$arg" = m
-            set fl_minimal true
+            set flags (dict.set minimal true $flags)
         else if test "$arg" = last; or test "$arg" = l
-            set fl_last true
+            set flags (dict.set last true $flags)
+        else if test "$arg" = hidden; or test "$arg" = h
+            set flags (dict.set hidden true $flags)
         end
     end
-    # We can also provide positional boolean args
-    # This is mostly for internal use
-    if test (count $argv) = 2
-        if test "$argv[1]" = true; or test "$argv[1]" = false
-            set fl_explode $argv[1]
-        end
-        if test "$argv[2]" = true; or test "$argv[2]" = false
-            set fl_minimal $argv[2]
+    # If argv is a dict, use that instead
+    if test (count $argv) -ge 1
+        if test (string match -r '^[^=]+=.*' $argv[1])
+            set flags $argv
         end
     end
 
@@ -65,12 +125,11 @@ function fishfinder
     # Ask if we want to keep finding
     function keep_finding
         set -l ff_lp_path $argv[1]
-        set -l fl_explode $argv[2]
-        set -l fl_minimal $argv[3]
+        set -l flags $argv[2..-1]
         echo
         set -l confirm (input.char (set_color brcyan)">>> Keep finding? (Y/n): ")
         if test $confirm = y; or test $confirm = Y; or test $confirm = ''
-            fishfinder $fl_explode $fl_minimal
+            fishfinder $flags
         else
             write (pwd) $ff_lp_path
         end
@@ -88,14 +147,16 @@ function fishfinder
     # Create the list of files and directories used by fzf
     function lsx
         # Since these vars should not be global, we must pass them as args 
-        set -l fl_explode $argv[1]
-        set -l fl_minimal $argv[2]
-        set -l exit_str $argv[3]
-        set -l goto_str $argv[4]
-        set -l back_str $argv[5]
-        set -l up_str $argv[6]
-        set -l explode_str $argv[7]
-        set -l unexplode_str $argv[8]
+        set -l exit_str $argv[1]
+        set -l goto_str $argv[2]
+        set -l back_str $argv[3]
+        set -l up_str $argv[4]
+        set -l explode_str $argv[5]
+        set -l unexplode_str $argv[6]
+        set -l flags $argv[7..-1]
+        set -l fl_explode (dict.get explode $flags)
+        set -l fl_minimal (dict.get minimal $flags)
+        set -l fl_hidden (dict.get hidden $flags)
         echo_not $fl_minimal "$(set_color -u brred)$exit_str"
         if test "$fl_explode" = true
             echo_not $fl_minimal "$(set_color -u bryellow)$unexplode_str"
@@ -108,7 +169,11 @@ function fishfinder
         echo_not $fl_minimal "$(set_color -u brmagenta)$back_str"
         echo_not $fl_minimal "$(set_color -u brcyan)$up_str"
         set_color normal
-        ls --group-directories-first -A1 -F --color=always 2>/dev/null
+        if test "$fl_hidden" = true
+            ls --group-directories-first -A1 -F --color=always 2>/dev/null
+        else
+            ls --group-directories-first -I '.*' -A1 -F --color=always 2>/dev/null
+        end
     end
 
     # Define special messages
@@ -189,42 +254,23 @@ end
         set ff_lp_path $TMPDIR/ff_lp
     end
 
-    # We use a temp file to handle special exit commands
-    set special_exit_path /tmp/ff_special_exit
-    # NOTE: Some systems may not have /tmp so use $TMPDIR if set
-    if test -d "$TMPDIR"
-        set special_exit_path $TMPDIR/ff_special_exit
-    end
-
     # Set up fzf options
-    set fzf_options "--prompt=$(prompt_pwd)/" --ansi --layout=reverse --height=98% --border \
-        --preview="$fzf_preview_fn" --preview-window=right:60%:wrap \
-        --bind=right:"accept" \
-        --bind=left:"execute(echo 'up:' >> $special_exit_path)+abort" \
-        --bind=ctrl-x:"execute(echo 'explode:' >> $special_exit_path)+abort" \
-        --bind=ctrl-v:"execute(echo view:{} >> $special_exit_path)+abort" \
-        --bind=ctrl-g:"execute(echo goto: >> $special_exit_path)+abort" \
-        --bind=ctrl-l:"execute(echo last: >> $special_exit_path)+abort" \
-        --bind=ctrl-p:"execute(echo print:{} >> $special_exit_path)+abort" \
-        --bind=ctrl-e:"execute(echo exec:{} >> $special_exit_path)+abort" \
-        --bind=ctrl-o:"execute(echo open:{} >> $special_exit_path)+abort" \
-        --bind=ctrl-y:"execute(echo copy:{} >> $special_exit_path)+abort" \
-        --bind=ctrl-d:"execute(echo del:{} >> $special_exit_path)+abort" \
-        --bind=alt-d:"execute(rm -rf {})+execute(echo reload: >> $special_exit_path)+abort" \
-        --bind=ctrl-r:"execute(echo reload: >> $special_exit_path)+abort" \
-        --bind=\::"execute(echo cmd:{} >> $special_exit_path)+abort"
+    set fzf_options "--prompt=$(prompt_pwd)/" --ansi --layout=reverse --height=98% --border --preview="$fzf_preview_fn" --preview-window=right:60%:wrap
 
     # If we need to specify shell for fzf, do so
     if test $fzf_with_shell = true
         set fzf_options $fzf_options --with-shell "fish -c"
     end
 
+    # Attach keybinds
+    set fzf_options $fzf_options $ff_kb
+
     #
     # Start the main logic
     #
 
-    # If we have 'fl_last' just echo last path and exit
-    if test "$fl_last" = true
+    # If we have 'flags.last' just echo last path and exit
+    if test "$(dict.get last $flags)" = true
         if test -f $ff_lp_path
             cat $ff_lp_path
         end
@@ -265,14 +311,13 @@ end
 
     # Get the selection
     set sel (lsx \
-      $fl_explode \
-      $fl_minimal \
       $exit_str \
       $goto_str \
       $back_str \
       $up_str \
       $explode_str \
       $unexplode_str \
+      $flags \
       | fzf $fzf_options)
 
     # Check if a special exit command was written
@@ -302,16 +347,16 @@ end
         if test -d "$sel"
             # This is a directory
             ls -l -A $sel
-            keep_finding $ff_lp_path $fl_explode $fl_minimal
+            keep_finding $ff_lp_path $flags
             return
         else if test -f $sel
             set fv_cmd (string split ' ' $file_viewer)
             $fv_cmd $sel
-            keep_finding $ff_lp_path $fl_explode $fl_minimal
+            keep_finding $ff_lp_path $flags
             return
         else
             # The user has likely selected a meta option by mistake
-            fishfinder $fl_explode $fl_minimal
+            fishfinder $flags
             return
         end
     end
@@ -336,10 +381,10 @@ end
             ./$sel
         else
             echo "$sel is not executable."
-            keep_finding $ff_lp_path $fl_explode $fl_minimal
+            keep_finding $ff_lp_path $flags
             return
         end
-        fishfinder $fl_explode $fl_minimal
+        fishfinder $flags
         return
     end
 
@@ -350,13 +395,21 @@ end
         if test $confirm = y
             echo "Deleting $sel ..."
             rm -rf $sel
-            fishfinder $fl_explode $fl_minimal
+            fishfinder $flags
             return
         else
             echo "Aborting delete."
-            fishfinder $fl_explode $fl_minimal
+            fishfinder $flags
             return
         end
+    end
+
+    # Handle delquick: Delete the file without confirmation
+    if test (string match "delquick:*" $sel)
+        set sel (string replace "delquick:" "" $sel)
+        rm -rf $sel
+        fishfinder $flags
+        return
     end
 
     # Handle cmd: Execute command on file
@@ -380,7 +433,19 @@ end
             set_color normal
             eval $cmd
         end
-        fishfinder $fl_explode $fl_minimal
+        fishfinder $flags
+        return
+    end
+
+    # Handle hidden: Toggle hidden files
+    if test $sel = "hidden:"
+        set fl_hidden (dict.get hidden $flags)
+        if test "$fl_hidden" = true
+            set flags (dict.set hidden false $flags)
+        else
+            set flags (dict.set hidden true $flags)
+        end
+        fishfinder $flags
         return
     end
 
@@ -398,10 +463,10 @@ end
             open $sel >/dev/null 2>&1 &
         else
             echo "No suitable open command found (xdg-open or open)."
-            keep_finding $ff_lp_path $fl_explode $fl_minimal
+            keep_finding $ff_lp_path $flags
             return
         end
-        fishfinder $fl_explode $fl_minimal
+        fishfinder $flags
         return
     end
 
@@ -423,18 +488,19 @@ end
             echo -n $full_path | wl-copy
         else
             echo "No suitable clipboard command found (pbcopy, xclip, or wl-copy)."
-            keep_finding $ff_lp_path $fl_explode $fl_minimal
+            keep_finding $ff_lp_path $flags
             return
         end
         echo "Copied to clipboard: $full_path"
-        keep_finding $ff_lp_path $fl_explode $fl_minimal
+        keep_finding $ff_lp_path (dict.get explode $flags) (dict.get minimal $flags)
         return
     end
 
     # Handle reload: Reload fishfinder
     if test (string match "reload:*" $sel)
         # Always reload without exploding
-        fishfinder false $fl_minimal
+        set flags (dict.set explode false $flags)
+        fishfinder $flags
         return
     end
 
@@ -466,32 +532,34 @@ end
             set goto_path (input.line $cmd_str)
         end
         cd $goto_path
-        fishfinder $fl_explode $fl_minimal
+        fishfinder $flags
         return
     end
 
     # Handle up directory
     if test "$sel" = "$up_str"; or test "$sel" = "up:"
         cd ..
-        fishfinder $fl_explode $fl_minimal
+        fishfinder $flags
         return
     end
 
     # Handle last: Just go back to fishfinder
     if test "$sel" = "$back_str"; or test "$sel" = "last:"
         cd -
-        fishfinder $fl_explode $fl_minimal
+        fishfinder $flags
         return
     end
 
     # Handle explode
     if test "$sel" = "$explode_str"; or test "$sel" = "explode:"
-        fishfinder true $fl_minimal
+        set flags (dict.set explode true $flags)
+        fishfinder $flags
     end
 
     # Handle unexplode
     if test "$sel" = "$unexplode_str"
-        fishfinder false $fl_minimal
+        set flags (dict.set explode false $flags)
+        fishfinder $flags
     end
 
     #
@@ -501,24 +569,24 @@ end
     if test -d "$sel"
         # This is a directory
         cd $sel
-        fishfinder $fl_explode $fl_minimal
+        fishfinder $flags
         return
     else if test -f $sel
         # This is a file
         if set -q VISUAL
             echo "Opening file with VISUAL editor: $VISUAL"
             $VISUAL $sel
-            fishfinder $fl_explode $fl_minimal
+            fishfinder $flags
             return
         else if set -q EDITOR
             echo "Opening file with EDITOR: $EDITOR"
             $EDITOR $sel
-            fishfinder $fl_explode $fl_minimal
+            fishfinder $flags
             return
         else
             echo "No editor set. Opening file with 'less'."
             less $sel
-            fishfinder $fl_explode $fl_minimal
+            fishfinder $flags
             return
         end
     end
