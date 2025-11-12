@@ -28,8 +28,8 @@ You can enter a special mode by sending an argument to fishfinder
 > When this program exists it will write a temporary file that contains the last selected path.
 > You can retrieve this path with `fishfinder l`:
 > ```sh
-> fishfinder
-> cd (fishfinder l)
+> ./finder.fish
+> cd (./finder.fish l)
 > ```
 
 ## Default Keybinds
@@ -83,7 +83,7 @@ kb goto ctrl-d
 - `copy    `: Copy the selected path to the system clipboard
 - `del     `: Delete the selected file or directory with confirmation
 - `delquick`: Instantly delete the selected file or directory
-- `realod  `: Reload the current directory listing
+- `reload  `: Reload the current directory listing
 - `cmd     `: Execute a custom command on the selected file or directory
 - `hidden  `: Toggle showing hidden files
 
