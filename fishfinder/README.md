@@ -30,26 +30,25 @@ You can enter a special mode by sending an argument to fishfinder
 > ```
 
 ## Keybinds
-- Enter: Enter diretory or select file
-- Right Arrow: Enter directory or select file
-- Left Arrow: Go up one directory (cd ..)
-- Ctrl-X: Toggle explode mode (show all files recursively from current directory)
-- Ctrl-V: View file or directory listing
-- Ctrl-P: Print the selected file path and exit
-- Ctrl-G: Go to a directory (cd)
-- Ctrl-L: Go back a directory (cd -)
-- Ctrl-E: Execute the selected file
-- Ctrl-D: Delete the selected file or directory with confirmation
-- Alt-D:  Instantly delete the selected file or directory
-- Ctrl-R: Reload the current directory listing
-- : (colon): Execute a custom command on the selected file
-- Shift-Up Arrow: Scroll preview up
-- Shift-Down Arrow: Scroll preview down
-- CTRL-Q: Quit
+- `enter     `: Enter diretory or select file
+- `right     `: Enter directory or select file
+- `left      `: Go up one directory (cd ..)
+- `ctrl-x    `: Toggle explode mode (show all files recursively from current directory)
+- `ctrl-v    `: View file or directory listing
+- `ctrl-p    `: Print the selected file path and exit
+- `ctrl-g    `: Go to a directory (cd)
+- `ctrl-l    `: Go back a directory (cd -)
+- `ctrl-e    `: Execute the selected file
+- `ctrl-o    `: Open file or directory in GUI (open / xdg-open) 
+- `ctrl-y    `: Copy the selected path to the system clipboard
+- `ctrl-d    `: Delete the selected file or directory with confirmation
+- `alt-d     `: Instantly delete the selected file or directory
+- `ctrl-r    `: Reload the current directory listing
+- `: (colon) `: Execute a custom command on the selected file
+- `shift-up  `: Scroll preview up
+- `shift-down`: Scroll preview down
+- `ctrl-q    `: Quit
 
 ## Goals
-- Operation for `xdg-open` for viewing files with default applications
-    - Should also support `open` for macOS
-- Option to execute with args, maybe should be the default for exec?
-    - Could drop to > [cmd] ...
+- Easy custom keybinds
 

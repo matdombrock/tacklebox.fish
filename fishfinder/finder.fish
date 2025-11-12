@@ -190,6 +190,8 @@ end
         --bind=ctrl-l:"execute(echo last: >> $special_exit_path)+abort" \
         --bind=ctrl-p:"execute(echo print:{} >> $special_exit_path)+abort" \
         --bind=ctrl-e:"execute(echo exec:{} >> $special_exit_path)+abort" \
+        --bind=ctrl-o:"execute(echo open:{} >> $special_exit_path)+abort" \
+        --bind=ctrl-y:"execute(echo copy:{} >> $special_exit_path)+abort" \
         --bind=ctrl-d:"execute(echo del:{} >> $special_exit_path)+abort" \
         --bind=alt-d:"execute(rm -rf {})+execute(echo reload: >> $special_exit_path)+abort" \
         --bind=ctrl-r:"execute(echo reload: >> $special_exit_path)+abort" \
@@ -357,6 +359,53 @@ end
             eval $cmd
         end
         fishfinder $fl_explode $fl_minimal
+        return
+    end
+
+    # Handle open: Open file with default application
+    if test (string match "open:*" $sel)
+        set sel (string replace "open:" "" $sel)
+        # Ensure file or directory exists
+        if not test -e $sel
+            set sel (pwd)
+        end
+        # Open using xdg-open (Linux) or open (macOS)
+        if type -q xdg-open
+            xdg-open $sel >/dev/null 2>&1 &
+        else if type -q open
+            open $sel >/dev/null 2>&1 &
+        else
+            echo "No suitable open command found (xdg-open or open)."
+            keep_finding $ff_lp_path $fl_explode $fl_minimal
+            return
+        end
+        fishfinder $fl_explode $fl_minimal
+        return
+    end
+
+    # Handle copy: Copy file path to clipboard
+    if test (string match "copy:*" $sel)
+        set sel (string replace "copy:" "" $sel)
+        # Ensure file or directory exists
+        if not test -e $sel
+            set sel (pwd)
+        end
+        set full_path (realpath $sel)
+        # Copy to clipboard using pbcopy (macOS), xclip (X11), or
+        # wl-copy (Wayland)
+        if type -q pbcopy
+            echo -n $full_path | pbcopy
+        else if type -q xclip
+            echo -n $full_path | xclip -selection clipboard
+        else if type -q wl-copy
+            echo -n $full_path | wl-copy
+        else
+            echo "No suitable clipboard command found (pbcopy, xclip, or wl-copy)."
+            keep_finding $ff_lp_path $fl_explode $fl_minimal
+            return
+        end
+        echo "Copied to clipboard: $full_path"
+        keep_finding $ff_lp_path $fl_explode $fl_minimal
         return
     end
 
