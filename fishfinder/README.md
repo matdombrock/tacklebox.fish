@@ -94,4 +94,5 @@ kb goto ctrl-d
 > See [fzf man page](https://www.mankier.com/1/fzf#Key/Event_Bindings-Available_Keys:_(Synonyms)) for a list of valid keys.
 
 ## Todo
-- Toggle hidden files
+- Save position & query when reloading
+- Improve reload speed
