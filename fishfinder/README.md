@@ -17,6 +17,7 @@ You can enter a special mode by sending an argument to fishfinder
 - `explode, e `: Shows all files recursively from current directory
 - `last, l    `: Last path mode, echoes the last selected path from fishfinder and exits
 - `minimal, m `: Dont show TUI options (keybinds only mode)
+- `hidden, h  `: Show hidden files
 
 > [!TIP]
 > These parameters can be combined and passed in any order.
@@ -33,6 +34,7 @@ You can enter a special mode by sending an argument to fishfinder
 - `enter     `: Enter diretory or select file
 - `right     `: Enter directory or select file
 - `left      `: Go up one directory (cd ..)
+- `ctrl-a    `: Show all files (toggle hidden)
 - `ctrl-x    `: Toggle explode mode (show all files recursively from current directory)
 - `ctrl-v    `: View file or directory listing
 - `ctrl-p    `: Print the selected file path and exit

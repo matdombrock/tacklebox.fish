@@ -3,7 +3,6 @@ kb accept right
 kb up left
 # ctrl-h is treated as backspace by terms
 kb hidden ctrl-a
-kb hidden alt-h
 kb explode ctrl-x
 kb view ctrl-v
 kb goto ctrl-g
