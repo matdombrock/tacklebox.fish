@@ -5,6 +5,7 @@
 #
 
 source (dirname (realpath (status --current-filename)))/../_lib/input.fish
+source (dirname (realpath (status --current-filename)))/../_lib/dict.fish
 
 # We use a temp file to handle special exit commands
 set special_exit_path /tmp/ff_special_exit
@@ -13,6 +14,8 @@ if test -d "$TMPDIR"
     set special_exit_path $TMPDIR/ff_special_exit
 end
 
+# A function for setting up custom keybinds
+# Must exist out of the main loop to avoid reloading on recursion
 set ff_kb
 function kb
     set -l action_id $argv[1]
