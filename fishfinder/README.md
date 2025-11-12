@@ -5,6 +5,7 @@ FishFinder is a terminal file explorer with fuzzy searching using fzf.
 ![screenshot](_doc/screenshot.png)
 
 ## Requires
+
 - `fzf` 
 - `../_lib/input.fish` 
 
@@ -12,6 +13,7 @@ FishFinder is a terminal file explorer with fuzzy searching using fzf.
 > This tool will try to use `bat` or `batcat` to preview files if installed. If neither can be found it falls back to `cat`.
 
 ## Parameters
+
 You can enter a special mode by sending an argument to fishfinder
 - `no argument`: Normal mode, shows files and directories
 - `explode, e `: Shows all files recursively from current directory
@@ -31,11 +33,12 @@ You can enter a special mode by sending an argument to fishfinder
 > ```
 
 ## Default Keybinds
+
 - `enter     `: Enter diretory or select file
 - `right     `: Enter directory or select file
 - `left      `: Go up one directory (cd ..)
 - `ctrl-a    `: Show all files (toggle hidden)
-- `ctrl-x    `: Toggle explode mode (show all files recursively from current directory)
+- `ctrl-x    `: Set explode mode (show all files recursively from current directory)
 - `ctrl-v    `: View file or directory listing
 - `ctrl-p    `: Print the selected file path and exit
 - `ctrl-g    `: Go to a directory (cd)
@@ -46,12 +49,13 @@ You can enter a special mode by sending an argument to fishfinder
 - `ctrl-d    `: Delete the selected file or directory with confirmation
 - `alt-d     `: Instantly delete the selected file or directory
 - `ctrl-r    `: Reload the current directory listing
-- `: (colon) `: Execute a custom command on the selected file
+- `: (colon) `: Execute a custom command on the selected file or directory
 - `shift-up  `: Scroll preview up
 - `shift-down`: Scroll preview down
 - `ctrl-q    `: Quit
 
 ## Custom Keybinds
+
 You can set a `FF_KB` environmental variable with a path to a `keybinds.fish` file.
 
 This file should contain a set of `kb` commands with this syntax:
@@ -59,8 +63,32 @@ This file should contain a set of `kb` commands with this syntax:
 kb [action] [key]
 ```
 
+For example:
+```sh
+kb goto ctrl-d
+```
+
+### Action Map
+
+- `accept  `: Accept the input
+- `abort   `: Abort the input
+- `up      `: Move up one dir (cd ..)
+- `explode `: Set explode mode (show all files recursively from current directory)
+- `view    `: Just view the file
+- `goto    `: Go to a specific directory
+- `last    `: Go to the last directory (cd -)
+- `print   `: Print the selected file path and exit
+- `exec    `: Execute the selected file
+- `open    `: Open file or directory in GUI (open / xdg-open)
+- `copy    `: Copy the selected path to the system clipboard
+- `del     `: Delete the selected file or directory with confirmation
+- `delquick`: Instantly delete the selected file or directory
+- `realod  `: Reload the current directory listing
+- `cmd     `: Execute a custom command on the selected file or directory
+- `hidden  `: Toggle showing hidden files
+
 > [!TIP]
-> See the ['./keybinds.fish'](./keybinds.fish) file for a list of possible actions. 
+> See the ['./keybinds.fish'](./keybinds.fish) file for keybind examples. 
 
 > [!TIP]
 > See [fzf man page](https://www.mankier.com/1/fzf#Key/Event_Bindings-Available_Keys:_(Synonyms)) for a list of valid keys.
