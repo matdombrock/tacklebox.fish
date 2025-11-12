@@ -113,22 +113,24 @@ function fishfinder
     # Force string functions to use fish or it will use the default shell which may not be fish
     # This could also be done by just writing it as posix sh but this is a fish script after all
     set fzf_preview_fn '\
-fish -c "
 # Since we use the -F flag on ls we might have a trailing asterisk
 # For some reason (???) setting vars doesnt work here so we use a function instead
+function tip;
+  echo -n (set_color brgreen)HELP:\n(set_color bryellow)$argv(set_color normal);
+end;
 function clean_sel;
   echo {} | sed \'s/[*\/]\$//\';
 end;
-if test {} = \"'$exit_str'\"; 
-    echo Exit FishFinder; 
-else if test {} = \"'$goto_str'\"; 
-    echo Go to directory; 
-else if test {} = \"'$up_str'\"; 
-    echo Go up one directory; 
-else if test {} = \"'$explode_str'\"; 
-    echo Explode current directory; 
-else if test {} = \"'$unexplode_str'\"; 
-    echo Unexplode current directory;
+if test {} = "'$exit_str'"; 
+    tip "Exit back to the shell"; 
+else if test {} = "'$goto_str'"; 
+    tip "Go to a directory (cd)"; 
+else if test {} = "'$up_str'"; 
+    tip "Go up one directory (cd ..)"; 
+else if test {} = "'$explode_str'"; 
+    tip "Explode current directory (find . -type f)"; 
+else if test {} = "'$unexplode_str'"; 
+    tip "Unexplode current directory";
 else if test -f (clean_sel); 
     echo (set_color --bold bryellow)file(set_color normal):
     '$file_viewer' (clean_sel); 
@@ -159,7 +161,7 @@ else if test -d (clean_sel) = false; and test -f (clean_sel) = false;
 else; 
     echo No preview available.; 
 end
-"'
+'
 
     # Define path to ff_lp temp file
     set ff_lp_path /tmp/ff_lp
@@ -177,7 +179,7 @@ end
 
     # Set up fzf options
     set fzf_options "--prompt=$(prompt_pwd)/" --ansi --layout=reverse --height=98% --border \
-        --preview="$fzf_preview_fn {}" --preview-window=right:60%:wrap \
+        --preview="$fzf_preview_fn" --preview-window=right:60%:wrap \
         --bind=right:"accept" \
         --bind=left:"execute(echo 'up:' >> $special_exit_path)+abort" \
         --bind=ctrl-x:"execute(echo 'explode:' >> $special_exit_path)+abort" \
