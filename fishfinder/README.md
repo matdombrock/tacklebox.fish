@@ -25,7 +25,7 @@ You can enter a special mode by sending an argument to fishfinder
 > These parameters can be combined and passed in any order.
 
 > [!TIP]
-> When this program exists it will write a temporary file that contains the last selected path.
+> When this program exits it will write a temporary file that contains the last selected path.
 > You can retrieve this path with `fishfinder l`:
 > ```sh
 > ./finder.fish
@@ -38,7 +38,7 @@ You can enter a special mode by sending an argument to fishfinder
 
 The default keybinds are as follows. See the "Action Map" below for more info.
 
-```fish
+```txt
 # Keybindings for FishFinder custom actions are suffixed `:` (colon)
 kb up: left
 kb hidden: ctrl-a
@@ -65,10 +65,15 @@ kb toggle-preview alt-h
 
 > [!TIP]
 > This tool inherits your default `fzf` keybinds unless they are remapped.
+> 
 > This means by default you have:
+> 
 > `enter     `: Enter directory or select file (accept)
+> 
 > `shift-up  `: Scroll preview up
+> 
 > `shift-down`: Scroll preview down
+> 
 > `ctrl-q    `: Quit
 
 
@@ -108,7 +113,8 @@ kb goto ctrl-d
 
 > [!WARNING]
 > `ctrl-h` is treated as backspace by most terms
-> `ctrl-b` is used by tmux
+> 
+> `ctrl-b` is used by tmux 
 
 > [!TIP]
 > You can use any valid [fzf action](https://www.mankier.com/1/fzf#Key/Event_Bindings-Available_Actions) here in addition to the FishFinder actions. The `fzf` actions are NOT suffixed with a `:` (colon). 
