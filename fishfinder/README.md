@@ -49,6 +49,6 @@ You can enter a special mode by sending an argument to fishfinder
 - `shift-down`: Scroll preview down
 - `ctrl-q    `: Quit
 
-## Goals
+## Todo
 - Easy custom keybinds
 
