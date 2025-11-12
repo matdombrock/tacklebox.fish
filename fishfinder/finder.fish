@@ -37,10 +37,11 @@ function fishfinder
     # Define special messages
     # NOTE: If the icons dont show, you need to use a nerd font in your terminal
     set exit_str ' exit'
-    set home_str ' home'
+    set goto_str ' goto'
     set up_str ' .. up'
     set explode_str ' explode'
     set unexplode_str ' unexplode'
+    set cmd_str 'λ  '
 
     # NOTE: Passing functions from our script into fzf is tricky
     # The easiest way is to define them as strings and eval them inside fzf
@@ -49,10 +50,10 @@ function fishfinder
     set lsx_fn '\
 function lsx
     # Since these vars should not be global, we must pass them as args
-    set explode_mode $argv[1]
+    set mode $argv[1]
     set_color yellow
     echo '$exit_str'
-    if test "$explode_mode" = explode
+    if test "$mode" = explode
         set_color yellow
         echo '$unexplode_str'
         set_color normal
@@ -61,7 +62,7 @@ function lsx
         return
     end
     set_color yellow
-    echo '$home_str'
+    echo '$goto_str'
     echo '$explode_str'
     set_color green
     echo '$up_str'
@@ -116,9 +117,10 @@ end
     set fzf_options "--prompt=$(prompt_pwd)/" --ansi --layout=reverse --height=80% --border \
         --preview="$fzf_preview_fn {}" --preview-window=right:60%:wrap \
         --bind=right:"accept" \
-        --bind=ctrl-x:"reload(fish -c '$lsx_fn; lsx explode')" \
         --bind=left:"execute(echo 'up:' >> $special_exit_path)+abort" \
+        --bind=ctrl-x:"reload(fish -c '$lsx_fn; lsx explode')" \
         --bind=ctrl-v:"execute(echo view:{} >> $special_exit_path)+abort" \
+        --bind=ctrl-g:"execute(echo goto: >> $special_exit_path)+abort" \
         --bind=ctrl-p:"execute(echo print:{} >> $special_exit_path)+abort" \
         --bind=ctrl-e:"execute(echo exec:{} >> $special_exit_path)+abort" \
         --bind=ctrl-d:"execute(echo del:{} >> $special_exit_path)+abort" \
@@ -157,20 +159,13 @@ end
 
     # Check if sel is null or empty
     if test -z "$sel"
-        write (pwd) $ff_lp_path
+        write (pwd) $ff_lp_path/
         return
     end
 
     #
     # Check for special exit commands
     #
-
-    # Handle up: Move up directory
-    if test (string match "up:*" $sel)
-        cd ..
-        fishfinder
-        return
-    end
 
     # Handle view: Just view the file / directory
     if test (string match "view:*" $sel)
@@ -212,8 +207,10 @@ end
             ./$sel
         else
             echo "$sel is not executable."
+            keep_finding $ff_lp_path
+            return
         end
-        keep_finding $ff_lp_path
+        fishfinder
         return
     end
 
@@ -240,14 +237,21 @@ end
         if not test -f $sel; and not test -d $sel
             set sel (pwd)
         end
-        set_color cyan
-        echo "Enter command (use \$p as placeholder for '$sel'):"
-        set cmd (input.line "> " | string replace -a \$p $sel)
         set_color bryellow
-        echo "> $cmd"
-        set_color normal
-        eval $cmd
-        keep_finding $ff_lp_path
+        echo "$cmd_str# Send 'b', 'back' or '' to return to fishfinder"
+        echo "$cmd_str# Sending 'exit' will return to the parent shell"
+        set_color cyan
+        echo "$cmd_str""\$p = $sel"
+        set cmd init
+        set exit_cmds q quit back b ''
+        while not contains $cmd $exit_cmds
+            set cmd (input.line $cmd_str | string replace -a \$p $sel)
+            set_color bryellow
+            echo "$cmd_str""$cmd"
+            set_color normal
+            eval $cmd
+        end
+        fishfinder
         return
     end
 
@@ -261,15 +265,29 @@ end
         return
     end
 
-    # Handle home directory
-    if test "$sel" = "$home_str"
-        cd ~
+    # Handle goto directory
+    # Handles 'goto:' as well
+    if test $sel = $goto_str; or test $sel = "goto:"
+        echo "Enter path to go to:"
+        set goto_path (input.line $cmd_str)
+        # Handle home shortcut
+        if test "$goto_path" = "~"
+            set goto_path $HOME
+        end
+        set goto_path (realpath $goto_path)
+        # Validate path
+        while not test -d "$goto_path"
+            echo "Directory does not exist: $goto_path"
+            echo "Enter path to go to:"
+            set goto_path (input.line $cmd_str)
+        end
+        cd $goto_path
         fishfinder
         return
     end
 
     # Handle up directory
-    if test "$sel" = "$up_str"
+    if test "$sel" = "$up_str"; or test "$sel" = "up:"
         cd ..
         fishfinder
         return
@@ -299,17 +317,17 @@ end
         if set -q VISUAL
             echo "Opening file with VISUAL editor: $VISUAL"
             $VISUAL $sel
-            keep_finding $ff_lp_path
+            fishfinder
             return
         else if set -q EDITOR
             echo "Opening file with EDITOR: $EDITOR"
             $EDITOR $sel
-            keep_finding $ff_lp_path
+            fishfinder
             return
         else
             echo "No editor set. Opening file with 'less'."
             less $sel
-            keep_finding $ff_lp_path
+            fishfinder
             return
         end
     end
