@@ -18,39 +18,52 @@ function kb
     set -l action_id $argv[1]
     set -l input $argv[2]
     set -l action ''
+    function spec
+        set -l cmd $argv[1]
+        echo "execute(echo $cmd >> $special_exit_path)+abort"
+    end
     if test $action_id = accept
         set action accept
     else if test $action_id = abort
         set action abort
     else if test $action_id = up
-        set action "execute(echo 'up:' >> $special_exit_path)+abort"
+        set action (spec "up:")
     else if test $action_id = explode
-        set action "execute(echo 'explode:' >> $special_exit_path)+abort"
+        set action (spec "explode:")
     else if test $action_id = view
-        set action "execute(echo view:$bind >> $special_exit_path)+abort"
+        set action (spec "view:{}")
     else if test $action_id = goto
-        set action "execute(echo goto: >> $special_exit_path)+abort"
+        set action (spec "goto:")
     else if test $action_id = last
-        set action "execute(echo last: >> $special_exit_path)+abort"
+        set action (spec "last:")
     else if test $action_id = print
-        set action "execute(echo print:$bind >> $special_exit_path)+abort"
+        set action (spec "print:{}")
     else if test $action_id = exec
-        set action "execute(echo exec:$bind >> $special_exit_path)+abort"
+        set action (spec "exec:{}")
     else if test $action_id = open
-        set action "execute(echo open:$bind >> $special_exit_path)+abort"
+        set action (spec "open:{}")
     else if test $action_id = copy
-        set action "execute(echo copy:$bind >> $special_exit_path)+abort"
+        set action (spec "copy:{}")
     else if test $action_id = del
-        set action "execute(echo del:$bind >> $special_exit_path)+abort"
+        set action (spec "del:{}")
+    else if test $action_id = delquick
+        set action (spec "delquick:{}")
     else if test $action_id = reload
-        set action "execute(echo reload: >> $special_exit_path)+abort"
+        set action (spec "reload:")
     else if test $action_id = cmd
-        set action "execute(echo cmd:$bind >> $special_exit_path)+abort"
+        set action (spec "cmd:{}")
     end
     set ff_kb $ff_kb --bind="$input:$action"
 end
 
-source (dirname (realpath (status --current-filename)))/keybinds.fish
+# Check if we have an FF_KB environment variable
+# If so, load keybinds from there
+set ff_kb (dirname (realpath (status --current-filename)))/keybinds.fish
+if test -n "$FF_KB"
+    set ff_kb $FF_KB
+end
+# Load keybinds
+source $ff_kb
 
 function fishfinder
 
@@ -384,6 +397,14 @@ end
             fishfinder $fl_explode $fl_minimal
             return
         end
+    end
+
+    # Handle delquick: Delete the file without confirmation
+    if test (string match "delquick:*" $sel)
+        set sel (string replace "delquick:" "" $sel)
+        rm -rf $sel
+        fishfinder $fl_explode $fl_minimal
+        return
     end
 
     # Handle cmd: Execute command on file

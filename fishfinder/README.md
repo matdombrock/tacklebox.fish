@@ -29,7 +29,7 @@ You can enter a special mode by sending an argument to fishfinder
 > cd (fishfinder l)
 > ```
 
-## Keybinds
+## Default Keybinds
 - `enter     `: Enter diretory or select file
 - `right     `: Enter directory or select file
 - `left      `: Go up one directory (cd ..)
@@ -48,6 +48,20 @@ You can enter a special mode by sending an argument to fishfinder
 - `shift-up  `: Scroll preview up
 - `shift-down`: Scroll preview down
 - `ctrl-q    `: Quit
+
+## Custom Keybinds
+You can set a `FF_KB` environmental variable with a path to a `keybinds.fish` file.
+
+This file should contain a set of `kb` commands with this syntax:
+```fish
+kb [action] [key]
+```
+
+> [!TIP]
+> See the ['./keybinds.fish'](./keybinds.fish) file for a list of possible actions. 
+
+> [!TIP]
+> See [fzf man page](https://www.mankier.com/1/fzf#Key/Event_Bindings-Available_Keys:_(Synonyms)) for a list of valid keys.
 
 ## Todo
 - Easy custom keybinds

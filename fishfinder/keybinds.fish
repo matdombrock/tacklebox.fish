@@ -10,5 +10,6 @@ kb exec ctrl-e
 kb open ctrl-o
 kb copy ctrl-y
 kb del ctrl-d
+kb delquick alt-d
 kb reload ctrl-r
 kb cmd ':'
