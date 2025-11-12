@@ -81,16 +81,22 @@ function fishfinder
             set flags (dict.set last true $flags)
         end
     end
-    # We can also provide positional boolean args
-    # This is mostly for internal use
-    if test (count $argv) = 2
-        if test "$argv[1]" = true; or test "$argv[1]" = false
-            set flags (dict.set explode $argv[1] $flags)
-        end
-        if test "$argv[2]" = true; or test "$argv[2]" = false
-            set flags (dict.set minimal $argv[2] $flags)
+    # If argv is a dict, use that instead
+    if test (count $argv) -ge 1
+        if test (string match -r '^[^=]+=.*' $argv[1])
+            set flags $argv
         end
     end
+    # We can also provide positional boolean args
+    # This is mostly for internal use
+    # if test (count $argv) = 2
+    #     if test "$argv[1]" = true; or test "$argv[1]" = false
+    #         set flags (dict.set explode $argv[1] $flags)
+    #     end
+    #     if test "$argv[2]" = true; or test "$argv[2]" = false
+    #         set flags (dict.set minimal $argv[2] $flags)
+    #     end
+    # end
 
     # Check for fzf
     if not type -q fzf
@@ -129,7 +135,7 @@ function fishfinder
         echo
         set -l confirm (input.char (set_color brcyan)">>> Keep finding? (Y/n): ")
         if test $confirm = y; or test $confirm = Y; or test $confirm = ''
-            fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+            fishfinder $flags
         else
             write (pwd) $ff_lp_path
         end
@@ -351,7 +357,7 @@ end
             return
         else
             # The user has likely selected a meta option by mistake
-            fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+            fishfinder $flags
             return
         end
     end
@@ -379,7 +385,7 @@ end
             keep_finding $ff_lp_path $flags
             return
         end
-        fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+        fishfinder $flags
         return
     end
 
@@ -390,11 +396,11 @@ end
         if test $confirm = y
             echo "Deleting $sel ..."
             rm -rf $sel
-            fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+            fishfinder $flags
             return
         else
             echo "Aborting delete."
-            fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+            fishfinder $flags
             return
         end
     end
@@ -403,7 +409,7 @@ end
     if test (string match "delquick:*" $sel)
         set sel (string replace "delquick:" "" $sel)
         rm -rf $sel
-        fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+        fishfinder $flags
         return
     end
 
@@ -428,7 +434,7 @@ end
             set_color normal
             eval $cmd
         end
-        fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+        fishfinder $flags
         return
     end
 
@@ -449,7 +455,7 @@ end
             keep_finding $ff_lp_path $flags
             return
         end
-        fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+        fishfinder $flags
         return
     end
 
@@ -482,7 +488,8 @@ end
     # Handle reload: Reload fishfinder
     if test (string match "reload:*" $sel)
         # Always reload without exploding
-        fishfinder false (dict.get minimal $flags)
+        set flags (dict.set explode false $flags)
+        fishfinder $flags
         return
     end
 
@@ -514,32 +521,34 @@ end
             set goto_path (input.line $cmd_str)
         end
         cd $goto_path
-        fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+        fishfinder $flags
         return
     end
 
     # Handle up directory
     if test "$sel" = "$up_str"; or test "$sel" = "up:"
         cd ..
-        fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+        fishfinder $flags
         return
     end
 
     # Handle last: Just go back to fishfinder
     if test "$sel" = "$back_str"; or test "$sel" = "last:"
         cd -
-        fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+        fishfinder $flags
         return
     end
 
     # Handle explode
     if test "$sel" = "$explode_str"; or test "$sel" = "explode:"
-        fishfinder true (dict.get minimal $flags)
+        set flags (dict.set explode true $flags)
+        fishfinder $flags
     end
 
     # Handle unexplode
     if test "$sel" = "$unexplode_str"
-        fishfinder false (dict.get minimal $flags)
+        set flags (dict.set explode false $flags)
+        fishfinder $flags
     end
 
     #
@@ -549,24 +558,24 @@ end
     if test -d "$sel"
         # This is a directory
         cd $sel
-        fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+        fishfinder $flags
         return
     else if test -f $sel
         # This is a file
         if set -q VISUAL
             echo "Opening file with VISUAL editor: $VISUAL"
             $VISUAL $sel
-            fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+            fishfinder $flags
             return
         else if set -q EDITOR
             echo "Opening file with EDITOR: $EDITOR"
             $EDITOR $sel
-            fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+            fishfinder $flags
             return
         else
             echo "No editor set. Opening file with 'less'."
             less $sel
-            fishfinder (dict.get explode $flags) (dict.get minimal $flags)
+            fishfinder $flags
             return
         end
     end
