@@ -118,7 +118,7 @@ end
         --preview="$fzf_preview_fn {}" --preview-window=right:60%:wrap \
         --bind=right:"accept" \
         --bind=left:"execute(echo 'up:' >> $special_exit_path)+abort" \
-        --bind=ctrl-x:"reload(fish -c '$lsx_fn; lsx explode')" \
+        --bind=ctrl-x:"execute(echo 'explode:' >> $special_exit_path)+abort" \
         --bind=ctrl-v:"execute(echo view:{} >> $special_exit_path)+abort" \
         --bind=ctrl-g:"execute(echo goto: >> $special_exit_path)+abort" \
         --bind=ctrl-p:"execute(echo print:{} >> $special_exit_path)+abort" \
@@ -294,7 +294,7 @@ end
     end
 
     # Handle explode
-    if test "$sel" = "$explode_str"
+    if test "$sel" = "$explode_str"; or test "$sel" = "explode:"
         fishfinder explode
     end
 
