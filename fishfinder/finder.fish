@@ -112,7 +112,8 @@ function fishfinder
     # The easiest way is to define them as strings and eval them inside fzf
     set fzf_preview_fn '\
 function tip;
-  echo -n (set_color brgreen) help\n(set_color bryellow)$argv(set_color normal);
+  echo (set_color brgreen) command(set_color normal):;
+  echo (set_color bryellow)$argv(set_color normal);
 end;
 # Since we use the -F flag on ls we might have a trailing asterisk
 set clean_sel (echo {} | string replace "*" "");
