@@ -33,6 +33,9 @@ end
 
 _angler_alias "Create an angler style alias, list with no input" :alias _angler_alias
 
+:alias "Reload fish config" :rlfish "source ~/.config/fish/config.fish"
+:alias "Reload angler aliases" :rlangler "source $base/angler.alias.fish"
+:alias "Update angler repo" :upangler "cd $base && git pull && echo \$(set_color green)'Angler updated!'"
 :alias "Angler TackleBox" :angler "$base/angler.fish"
 :alias "FishFinder fuzzy file explorer" :fishfinder "$base/fishfinder/finder.fish"
 :alias "FishFinder fuzzy file explorer" :ff "$base/fishfinder/finder.fish"
@@ -43,6 +46,3 @@ _angler_alias "Create an angler style alias, list with no input" :alias _angler_
 :alias "Quick git commit helper" :fgit "$base/fgit/fgit.fish"
 :alias "Manage fish shell prompt styles" :rod _rod
 :alias "Adventure game" :adv "$base/games/adv.fish"
-:alias "Reload fish config" :rlfish "source ~/.config/fish/config.fish"
-:alias "Reload angler aliases" :rlangler "source $base/angler.alias.fish"
-:alias "Update angler repo" :upangler "cd $base && git pull && echo \$(set_color green)'Angler updated!'"
