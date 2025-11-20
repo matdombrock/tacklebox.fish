@@ -22,7 +22,7 @@ TUI fuzzy finding launcher
 
 Use `tbox` to load a TUI that can launch these programs:
 ```sh
-fish angler.fish
+./angler.fish
 ```
 
 ## Aliases
@@ -30,7 +30,7 @@ fish angler.fish
 You can add aliases for most of the useful programs here by running:
 
 ```sh
-source angler.fish
+source angler.alias.fish
 ```
 
 > [!TIP]

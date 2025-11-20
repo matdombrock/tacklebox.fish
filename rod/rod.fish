@@ -1,8 +1,10 @@
+#! /usr/bin/env fish
+
 # NOTE: This file is intended to be sourced
 # This is required to set the prompt style
 
 set PROMPT default
-set rod_list default minimal full
+set rod_list default minimal replicat
 
 function fish_prompt
     # Check if PROMPT is in rod_list
@@ -19,7 +21,7 @@ function fish_prompt
     return
 end
 
-function :rod
+function _rod
     if test "$argv[1]" = list; or test "$argv[1]" = l; or test -z "$argv[1]"
         set_color brmagenta
         echo "Available prompt styles:"
@@ -32,8 +34,11 @@ function :rod
     set PROMPT $argv[1]
 end
 
+# Create alias for easier listing
+alias :rod='_rod'
+
 # Appease the LSP
 if test 1 = 0
     fish_prompt
-    :rod
+    _rod
 end
