@@ -132,4 +132,13 @@ function chat
     end
 end
 
+if test -z "$argv"
+    echo "Usage: llm <command> [args...]"
+    echo "Commands:"
+    echo "  com <prompt>         Get a completion for the given prompt."
+    echo "  cmd <description>    Get a unix command for the given description."
+    echo "  chat                 Start an interactive chat session."
+    exit 1
+end
+
 eval $argv[1] $argv[2..-1]
