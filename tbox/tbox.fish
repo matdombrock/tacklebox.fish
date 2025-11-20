@@ -94,7 +94,7 @@ function expand_cmds
 end
 
 # Load commands
-set cmd_path $base/tbox_commands.fish
+set cmd_path $base/demo.tbox.fish
 # Check if we have a TBOX_CMD_PATH env var
 if set -q TBOX_CMD_PATH
     # echo overriding command path with $TBOX_CMD_PATH
