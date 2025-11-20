@@ -18,10 +18,13 @@ if test "$_" = source
     alias :fishfish="$base/fishfish/fish.fish"
     # Launch Reel (fuzzy package manager)
     alias :reel="sudo $base/reel/reel.fish"
+    # Quick git commits
+    alias :fgit="$base/fgit/fgit.fish"
 
     echo set aliases:
     alias | grep ':'
-    echo (set_color yellow)Note: these aliases are prefixed with a colon \(:\) to avoid conflicts with existing commands.(set_color normal)
+    set_color bryellow
+    echo Note: these aliases are prefixed with a colon \(:\) to avoid conflicts with existing commands.
 else
     # Run tbox with angler commands
     set -l base (dirname (realpath (status --current-filename)))
