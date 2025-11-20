@@ -13,8 +13,17 @@ function helpa
     set -a helptext "$(set_color brgreen)$split[1] - $(set_color bryellow)$split[2] \n"
 end
 
+#
 # Sourced files
+#
+
+# Rod prompt manager
 source $base/rod/rod.fish
+helpa ":rod - Manage Rod prompt styles."
+
+#
+# Standard aliases
+#
 
 # Adventure game
 alias :adv="$base/games/adv.fish"
@@ -39,9 +48,6 @@ helpa ":reel - Launch the Reel fuzzy package manager."
 # Quick git commits
 alias :fgit="$base/fgit/fgit.fish"
 helpa ":fgit - Quick git commit helper."
-# Rod prompt manager
-alias :rod="_rod"
-helpa ":rod - Manage Rod prompt styles."
 # Launch angler tbox
 alias :angler="$base/angler.fish"
 helpa ":angler - Launch the Angler TackleBox."
