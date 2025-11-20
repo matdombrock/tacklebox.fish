@@ -19,7 +19,11 @@ source $base/rod/rod.fish
 
 # Helper to create aliases and build help text
 set _angler_alias_help_text "$(set_color brblue)Available Angler aliases:\n"
-function aalias
+function _angler_alias
+    if test -z "$argv"
+        echo -e $_angler_alias_help_text
+        return
+    end
     set -l desc $argv[1]
     set -l name $argv[2]
     set -l cmd $argv[3]
@@ -27,14 +31,15 @@ function aalias
     alias $name=$cmd
 end
 
-aalias "List all Angler aliases" :alias "echo -e \$_angler_alias_help_text"
-aalias "Angler TackleBox" :angler "$base/angler.fish"
-aalias "FishFinder fuzzy file explorer" :fishfinder "$base/fishfinder/finder.fish"
-aalias "FishFinder fuzzy file explorer" :ff "$base/fishfinder/finder.fish"
-aalias "Run FishFinder and cd to the selected directory" :ffg ":ff && cd ($base/fishfinder/finder.fish l)"
-aalias "TackleBox command launcher" :tbox "$base/tbox/tbox.fish"
-aalias "Fish in Fish" :fishfish "$base/fishfish/fish.fish"
-aalias "Reel fuzzy package manager" :reel "$base/reel/reel.fish"
-aalias "Quick git commit helper" :fgit "$base/fgit/fgit.fish"
-aalias "Manage fish shell prompt styles" :rod _rod
-aalias "Adventure game" :adv "$base/games/adv.fish"
+_angler_alias "Create an angler style alias, list with no input" :alias _angler_alias
+
+:alias "Angler TackleBox" :angler "$base/angler.fish"
+:alias "FishFinder fuzzy file explorer" :fishfinder "$base/fishfinder/finder.fish"
+:alias "FishFinder fuzzy file explorer" :ff "$base/fishfinder/finder.fish"
+:alias "Run FishFinder and cd to the selected directory" :ffg ":ff && cd ($base/fishfinder/finder.fish l)"
+:alias "TackleBox command launcher" :tbox "$base/tbox/tbox.fish"
+:alias "Fish in Fish" :fishfish "$base/fishfish/fish.fish"
+:alias "Reel fuzzy package manager" :reel "$base/reel/reel.fish"
+:alias "Quick git commit helper" :fgit "$base/fgit/fgit.fish"
+:alias "Manage fish shell prompt styles" :rod _rod
+:alias "Adventure game" :adv "$base/games/adv.fish"

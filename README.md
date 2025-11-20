@@ -35,6 +35,8 @@ source angler.alias.fish
 
 > [!TIP]
 > Use the `:alias` alias to list all angler aliases.
+> 
+> You can also use `:alias` to set new angler style aliases
 
 
 > [!WARNING]
