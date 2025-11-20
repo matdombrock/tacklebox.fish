@@ -17,7 +17,7 @@ if test "$_" = source
     # Fish in Fish
     alias :fishfish="$base/fishfish/fish.fish"
     # Launch Reel (fuzzy package manager)
-    alias :reel="$base/reel/reel.fish"
+    alias :reel="sudo $base/reel/reel.fish"
 
     echo set aliases:
     alias | grep ':'

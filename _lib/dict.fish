@@ -21,11 +21,11 @@ function dict.get
         set -l v (string split "$dict_delim" $pair)[2]
         if test $k = $key
             echo $v
-            return 0
+            return
         end
     end
     echo null
-    return 1
+    return
 end
 
 # Set value by key
