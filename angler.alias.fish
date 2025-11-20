@@ -45,3 +45,4 @@ _angler_alias "Create an angler style alias, list with no input" :alias _angler_
 :alias "Adventure game" :adv "$base/games/adv.fish"
 :alias "Reload fish config" :rlfish "source ~/.config/fish/config.fish"
 :alias "Reload angler aliases" :rlangler "source $base/angler.alias.fish"
+:alias "Update angler repo" :upangler "cd $base && git pull && echo \$(set_color green)'Angler updated!'"
