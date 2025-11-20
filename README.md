@@ -7,14 +7,20 @@ A collection of (mostly) disconnected small `fish` shell programs for avid angle
 
 ## Programs
 
+### [Fgit](/fgit)
+A simple git CLI
 ### [FishFinder](/fishfinder)
 TUI file explorer
 ### [FishFish](/fishfish)
 Fish in fish
 ### [Games](/games)
 Games written in fish
+### [LLM](/llm)
+An LLM interface
 ### [Reel](/reel)
 Fuzzy package manager
+### [Rod](/rod)
+Change your fish prompt
 ### [TackleBox](/tbox)
 TUI fuzzy finding launcher
 
