@@ -43,7 +43,6 @@ end
 function echollm
     set -l opts $argv
     set -l res (ollama_completion $opts)
-    set_color brgreen
     echo -e $res | string trim
 end
 
