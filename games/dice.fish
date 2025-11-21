@@ -144,8 +144,8 @@ m m m m m m m m m m m m m m m"
 # Hide cursor
 echo -en "\033[?25l"
 
+# Initial empty buffer for overwrite
 echo -n "\
-ROLLING:
 .
 .
 .
@@ -163,8 +163,8 @@ for i in (seq 1 6)
         set random_index (random 1 6)
     end
     set last_random $random_index
-    # echo -en "\033[H"
-    # move cursor up 15 lines
+    # echo -en "\033[H"  # Reset cursor position
+    # move cursor up 8 lines
     echo -en "\033[8A"
     graph.render $sides[$random_index]
     sleep 0.1

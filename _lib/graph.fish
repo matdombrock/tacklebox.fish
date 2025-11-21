@@ -1,74 +1,114 @@
-source (dirname (realpath (status --current-filename)))/../_lib/input.fish
+#! /usr/bin/env fish
 
-set graph
-set graph_width 64
-set graph_height 16
-set graph_size (math $graph_width x $graph_height)
-set graph_clear_char (set_color -b brblack red)'-'(set_color normal)
+# Example frame
+# set frame "\
+# w w w w
+# w w w w
+# w r w w
+# r g b y"
 
-function graph.init
-    set -g graph_width $argv[1]
-    set -g graph_height $argv[2]
-    set -g graph_clear_char $argv[3]
-    set -g graph_size (math $graph_width x $graph_height)
-    for i in (seq 1 $graph_size)
-        set graph[$i] $graph_clear_char
-    end
-end
-
-function graph.px
-    set -l x $argv[1]
-    set -l y $argv[2]
-    set -l char $argv[3]
-    if test $x -ge 0 -a $x -lt $graph_width -a $y -ge 0 -a $y -lt $graph_height
-        set graph[(math $y x $graph_width + $x + 1)] $char
-    end
-end
-
-function graph.string
-    set -l x $argv[1]
-    set -l y $argv[2]
-    set -l str $argv[3]
-    for i in (seq 0 (math (string length $str) - 1))
-        graph.px (math $x + $i) $y (string sub -s (math $i + 1) -l 1 $str)
-    end
-end
-
-function graph.line
-end
-
+# Render frame with unicode half blocks
 function graph.render
-    for y in (seq 0 (math $graph_height - 1))
-        for x in (seq 0 (math $graph_width - 1))
-            echo -n $graph[(math $y x $graph_width + $x + 1)]
+    function get_color
+        switch $argv[1]
+            case r
+                echo red
+            case g
+                echo green
+            case b
+                echo blue
+            case y
+                echo yellow
+            case c
+                echo cyan
+            case m
+                echo magenta
+            case w
+                echo white
+            case l
+                echo black
+            case .
+                echo black
+            case n
+                echo normal
+            case R
+                echo brred
+            case G
+                echo brgreen
+            case B
+                echo brblue
+            case Y
+                echo bryellow
+            case C
+                echo brcyan
+            case M
+                echo brmagenta
+            case W
+                echo brwhite
+            case L
+                echo brblack
         end
-        echo -n " "
+    end
+    set -l frame_str $argv[1]
+    set -l lines (string split \n $frame_str)
+    set -l height (count $lines)
+    set -l width (string length $lines[1])
+
+    # If odd number of lines, pad with white line
+    if test (math "$height % 2") -eq 1
+        set lines $lines white_line
+    end
+
+    for i in (seq 1 2 $height)
+        set -l top (string split '' $lines[$i])
+        set -l bottom (string split '' $lines[(math "$i + 1")])
+        for j in (seq 1 $width)
+            set -l fg $top[$j]
+            set -l bg $bottom[$j]
+
+            if test "$fg" = ' '; or test "$bg" = ' '
+                continue
+            end
+
+            set_color (get_color $fg)
+            set_color -b (get_color $bg)
+
+            echo -n '▀'
+            set_color normal
+        end
+        echo ''
+    end
+end
+
+function graph.frame_new
+    set -l w $argv[1]
+    set -l h $argv[2]
+    set -l c $argv[3]
+    for y in (seq 1 $h)
+        for x in (seq 1 $w)
+            echo -n $c
+        end
         echo
     end
 end
 
-function graph.clear
-    graph.init $graph_width $graph_height $graph_clear_char
-    # printf "\033[H"
-    # Move cursor to top-left with tput
-    tput cup 0 0
-    # clear
-end
-
-function graph.cursor
-    if test $argv[1] = true
-        printf "\033[?25h"
-    else
-        printf "\033[?25l"
+# set a "pixel" in the frame at (x, y) with color c
+function graph.frame_set
+    set -l x $argv[1]
+    set -l y $argv[2]
+    set -l c $argv[3]
+    set -l frame $argv[4]
+    set -l lines (string split \n $frame)
+    for i in (seq 1 (count $lines))
+        set -l line $lines[$i]
+        set -l chars (string split '' $line)
+        for j in (seq 1 (count $chars))
+            if test $i = $y; and test $j = $x
+                echo -n $c
+            else
+                echo -n $chars[$j]
+            end
+        end
+        echo ''
     end
-end
-
-# Appease LSP
-if test 1 = 0
-    graph.init
-    graph.px
-    graph.string
-    graph.render
-    graph.clear
-    graph.cursor
 end
