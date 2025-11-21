@@ -23,6 +23,8 @@ Fuzzy package manager
 Change your fish prompt
 ### [TackleBox](/tbox)
 TUI fuzzy finding launcher
+### [Vest](/vest)
+A "curated history" fuzzy finder
 
 ## Demo
 
@@ -47,24 +49,3 @@ source angler.alias.fish
 
 > [!WARNING]
 > You must be inside a `fish` shell to source these aliases.
-
-### Sourcing vs Alias
-
-You use most tools in three ways.
-
-Set an alias:
-
-```sh
-alias mytool='bash /path/to/mytool.sh'
-```
-
-Or to have them source a function like:
-
-```sh
-source /path/to/mytool.sh
-```
-
-You may also add them to `$PATH` and call them directly.
-
-> [!WARNING]
-> It's **recommended to make an alias** since sourcing some scripts may pollute your shell with global functions and variables. 
