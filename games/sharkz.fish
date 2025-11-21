@@ -32,7 +32,7 @@ W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 "
 
-graph.render $title
+graph.render $title half
 set_color brgreen
 echo COntrols:
 set_color bryellow
@@ -69,7 +69,7 @@ function sharks
         set frame (graph.frame_set $boat[1] $boat[2] b $frame | string collect)
         # clear
         echo -en "\033[H" # Reset cursor position
-        graph.render $frame
+        graph.render $frame full
         # Check for escape
         if test $player[1] -eq 0; or test $player[1] -eq (math $width + 1); or test $player[2] -eq 0; or test $player[2] -eq (math $height + 1)
             set_color green
