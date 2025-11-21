@@ -140,10 +140,6 @@ w W w w w W W W W W w w w W w
 l w W W W W W w W W W W W w l
 m m m m m m m m m m m m m m m"
 
-# clear
-# Hide cursor
-echo -en "\033[?25l"
-
 # Initial empty buffer for overwrite
 echo -n "\
 .
@@ -155,6 +151,8 @@ echo -n "\
 .
 .
 "
+# Hide cursor
+echo -en "\033[?25l"
 
 set last_random 0
 set random_index 0

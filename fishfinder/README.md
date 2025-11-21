@@ -41,6 +41,7 @@ The default keybinds are as follows. See the "Action Map" below for more info.
 ```txt
 # Keybindings for FishFinder custom actions are suffixed `:` (colon)
 kb up: left
+kb up: ctrl-u
 kb hidden: ctrl-a
 kb explode: ctrl-x
 kb view: ctrl-v

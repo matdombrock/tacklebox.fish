@@ -1,0 +1,51 @@
+set frames
+set -a frames "\
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+"
+
+set -a frames "\
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+w w w w w w w w
+w w w w w w w w
+. . . . . . . .
+. . . . . . . .
+. . . . . . . ."
+
+set -a frames "\
+. . . . . . . .
+. . . . . . . .
+. w w w w w w .
+w r r r r r r w
+w r r r r r r w
+. w w w w w w .
+. . . . . . . .
+. . . . . . . ."
+
+set -a frames "\
+. . . . . . . .
+. . w w w w . .
+. w r r r r w .
+w r r r r r r w
+w r r r r r r w
+. w r r r r w .
+. . w w w w . .
+. . . . . . . ."
+
+set -a frames "\
+. . . w w . . .
+. w w r r w w .
+. w r r r r w .
+w r r r r r r w
+w r r r r r r w
+. w r r r r w .
+. w w r r w w .
+. . . w w . . ."
