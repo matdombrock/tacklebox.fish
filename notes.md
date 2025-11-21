@@ -43,4 +43,18 @@ x
 
 Here, `z` cannot access `y` because `y` is local to `x`, and Fish does not support closure-like scoping.
 
-
+## Automatically create a config file
+```fish
+# Check if llm.cfg.fish exists in the user's config directory
+set config_file ~/.config/fish/llm.cfg.fish
+if test -f $config_file
+    source $config_file
+else
+    echo -e "set model gemma3:4b\nset server http://localhost:11434" >>$config_file
+    echo "Created default config file at:"
+    echo $config_file
+    set_color yellow
+    echo "Please edit it to set your preferred model and server."
+    exit 1
+end
+```

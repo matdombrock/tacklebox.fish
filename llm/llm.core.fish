@@ -3,23 +3,15 @@
 # Requires jq
 
 source (dirname (realpath (status --current-filename)))/../_lib/dict.fish
+source (dirname (realpath (status --current-filename)))/opt_or.fish
 # dict.delimiter "===DICT_DELIM==="
 
-# Helper function to get option or default value
-function opt_or
-    set -l key $argv[1]
-    set -l default $argv[2]
-    set -l option $argv[3..-1]
-    set -l value (dict.get $key $option)
-    if test $value = null
-        if test $default = exit
-            echo "Error: $key is required" >&2
-            exit 1
-        end
-        echo $default
-    else
-        echo $value
-    end
+# opts:
+# server (default: http://localhost:11434)
+function ollama_list_models
+    set -l opts $argv
+    set -l server (opt_or server "http://localhost:11434" $opts)
+    curl -s $server/api/tags
 end
 
 # opts:
