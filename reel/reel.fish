@@ -30,7 +30,7 @@ function fuzzy_pacman
     end
     function install
         echo λ(set_color yellow) pacman -S $argv(set_color normal)
-        pacman -S $argv
+        sudo pacman -S $argv
     end
     set search_res (search $argv | fzf $fzf_opts | string trim)
     if test -z "$search_res"
@@ -48,7 +48,7 @@ function fuzzy_apt
     end
     function install
         echo λ(set_color yellow) apt install $argv(set_color normal)
-        apt install $argv
+        sudo apt install $argv
     end
     set search_res (search $argv | fzf $fzf_opts | string trim)
     if test -z "$search_res"
@@ -69,7 +69,7 @@ function fuzzy_dnf
     end
     function install
         echo λ(set_color yellow) dnf install $argv(set_color normal)
-        dnf install $argv
+        sudo dnf install $argv
     end
     set search_res (search $argv | fzf $fzf_opts | string trim)
     if test -z "$search_res"
