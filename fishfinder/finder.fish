@@ -17,6 +17,7 @@ end
 # A function for setting up custom keybinds
 # Must exist out of the main loop to avoid reloading on recursion
 set ff_kb
+set ff_kb_txt
 function kb
     set -l action_id $argv[1]
     set -l input $argv[2]
@@ -58,6 +59,7 @@ function kb
         set action $action_id
     end
     set ff_kb $ff_kb --bind="$input:$action"
+    set ff_kb_txt "$ff_kb_txt $(set_color brmagenta)$input $(set_color brcyan)$action_id\n"
 end
 
 # Check if we have an FF_KB environment variable
@@ -203,7 +205,15 @@ end;
 # Since we use the -F flag on ls we might have a trailing asterisk
 set clean_sel (echo {} | string replace "*" "");
 if test {} = "'$exit_str'"; 
-    tip "Exit back to the shell"; 
+    tip "Exit back to the shell";
+    echo ""
+    set_color brblue
+    echo " Keybinds:";
+    echo -e "'$ff_kb_txt'" | string trim;
+    set_color brgreen
+    echo "modify at:"
+    set_color brcyan
+    echo '$ff_kb_path';
 else if test {} = "'$goto_str'"; 
     tip "Go to a directory (cd)"; 
 else if test {} = "'$back_str'"; 
