@@ -1,16 +1,3 @@
-add_cmd test optional "echo {#}"
-add_cmd test envvar "set VAR world; echo {#} \$VAR"
-add_cmd test envvarold "VAR=world echo {#} \$VAR"
-add_cmd test envvarold2 "VAR=~ ls \$VAR --color=always"
-add_cmd test required "echo {##}"
-add_cmd test reqopt "echo {##} {#}"
-add_cmd test explode "echo {...}"
-add_cmd test allargs "echo {##} {#} {...}"
-add_cmd test weirdorder "echo {#} {##} {...}"
-add_cmd test touching "echo {##}{##}"
-add_cmd test t1 "echo {#} {#}"
-add_cmd test t2 "echo {#}"
-
 add_cmd edit "edit nvim config" "cd ~/.config/nvim && nvim"
 add_cmd edit "edit fish config" "cd ~/.config/fish && nvim"
 

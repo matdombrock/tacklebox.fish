@@ -1,64 +1,31 @@
-# Requires jq
+#! /usr/bin/env fish
 
-source (dirname (realpath (status --current-filename)))/../_lib/dict.fish
+source (dirname (realpath (status --current-filename)))/../_lib/input.fish
+source (dirname (realpath (status --current-filename)))/llm.core.fish
+source (dirname (realpath (status --current-filename)))/llm.chatui.fish
 
-function opt_or
-    set -l key $argv[1]
-    set -l default $argv[2]
-    set -l opt $argv[3..-1]
-    set -l value (dict.get $key $opt)
-    if test $value = null
-        if test $default = exit
-            echo "Error: $key is required" >&2
-            exit 1
-        end
-        echo $default
-    else
-        echo $value
-    end
-end
-
-function ollama
-    set -l opt $argv
-
-    set -l prompt (opt_or prompt exit $opt)
-    set -l model (opt_or model exit $opt)
-    set -l server (opt_or server "http://localhost:11434" $opt)
-    set -l system (opt_or system "You are a helpful assistant" $opt)
-    set -l seed (opt_or seed -1 $opt)
-    set -l temperature (opt_or temperature 0.7 $opt)
-
-    set -l res (\
-curl -s $server/api/generate \
-  -d '{
-  "model": "'$model'",
-  "prompt": "'$prompt'",
-  "system": "'$system'",
-  "options": {
-    "seed": '$seed',
-    "temperature": '$temperature'
-  },
-  "stream": false
-}')
-
-    echo $res | jq -r '.response'
-end
-
-set model gemma3:4b
-set server http://localhost:11434
-
-# Check if llm.cfg.fish exists in the user's config directory
-set config_file ~/.config/fish/llm.cfg.fish
-if test -f $config_file
-    source $config_file
-else
-    echo -e "set model gemma3:4b\nset server http://localhost:11434" >>$config_file
-    echo "Created default config file at:"
-    echo $config_file
+set model $LLM_MODEL
+if test -z "$model"
     set_color yellow
-    echo "Please edit it to set your preferred model and server."
-    exit 1
+    echo "No \$LLM_MODEL set, defaulting to gemma3:4b"
+    echo "To set:"
+    set_color blue
+    echo "set -x LLM_MODEL https://localhost:11434"
+    set model gemma3:4b
 end
+set server $LLM_SERVER
+if test -z "$server"
+    set_color yellow
+    echo "No \$LLM_SERVER set, defaulting to http://localhost:11434"
+    echo "To set:"
+    set_color blue
+    echo "set -x LLM_MODEL gemma3:4b"
+    set server http://localhost:11434
+end
+
+#
+# Utility functions
+#
 
 function sysinfo
     echo -n $(whoami)@$(hostname) - \
@@ -74,23 +41,78 @@ function sysinfo
 end
 
 function echollm
-    set -l opt $argv
-    set -l res (ollama $opt)
+    set -l opts $argv
+    set -l res (ollama_completion $opts)
     set_color brgreen
-    echo $res | string trim
+    echo -e $res | string trim
+end
+
+#
+# Command functions
+#
+
+# List all models using fzf for selection
+# Uses the api/tags endpoint to get model info
+# curl http://localhost:11434/api/tags | jq -r '.models[] | "\(.name) \(.details.parameter_size) \(.details.quantization_level)"'
+function models
+    function model_lines
+        set -l list $argv
+        set -l listr (echo $list | jq -r '.models[] | "\(.name) \(.details.parameter_size) \(.details.quantization_level)"')
+        for line in $listr
+            set -l line_split (echo $line | string split ' ')
+            set -l model_split (echo $line_split[1] | string split ':')
+            set -l model_name $model_split[1]
+            set -l model_tag $model_split[2]
+            set_color green
+            echo -n $model_name
+            set_color blue
+            echo -n ":"
+            set_color magenta
+            echo -n "$model_tag"
+            set_color blue
+            echo -n " - "
+            set_color yellow
+            echo -n $line_split[2]
+            set_color cyan
+            echo -n " "
+            echo $line_split[3]
+        end
+    end
+    set -l listopts server="$server"
+    set -l list (ollama_list_models $listopts)
+    set -l selection (model_lines $list | fzf --prompt="Find LLM model: " --height=40% --layout=reverse --border --ansi)
+    if test -z "$selection"
+        set_color yellow
+        echo "No model selected."
+        return
+    end
+    set -l model_name (echo $selection | string split ' ')[1]
+    set_color magenta
+    echo "Current model: $model"
+    set_color green
+    echo "To set model, run:"
+    set_color blue
+    echo "set -x LLM_MODEL $model_name"
+end
+# Alias for models
+function list
+    models
+end
+function ls
+    models
 end
 
 function com
-    set -l opt \
+    set -l opts \
         prompt="$argv" \
         system="You are a helpful AI assistant." \
         model="$model" \
         server="$server"
-    echollm $opt
+    echollm $opts
 end
 
 function cmd
-    set -l opt \
+    set -l opts \
         prompt="$argv" \
         system="\
 The user will describe a unix command.\
@@ -100,14 +122,28 @@ Here is the users system information: $(sysinfo)." \
         model="$model" \
         server="$server" \
         temperature=0.2
-    echollm $opt
+    echollm $opts
+end
+
+function chat
+    set -l opts \
+        model="$model" \
+        system="$argv" \
+        server="$server" \
+        temperature=0.7 \
+        seed=-1
+    chatui $opts
+end
+
+if test -z "$argv"
+    echo "Usage: llm <command> [args...]"
+    echo "Commands:"
+    echo "  set-model           Interactively set the LLM model."
+    echo "  set-server <url>    Set the LLM server URL."
+    echo "  com <prompt>        Get a completion for the given prompt."
+    echo "  cmd <description>   Get a unix command for the given description."
+    echo "  chat <system>       Start an interactive chat session."
+    exit 1
 end
 
 eval $argv[1] $argv[2..-1]
-
-# Appease LSP
-if test 1 = 0
-    ollama
-    com
-    cmd
-end

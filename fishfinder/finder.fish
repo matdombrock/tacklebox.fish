@@ -288,7 +288,7 @@ end
     set width (tput cols)
     set art_width 20
     set padding (math floor (math "($width - $art_width) / 2"))
-    set bg \~ # ░
+    set bg \| # ░
     set_color brmagenta
     for i in (seq $padding)
         echo -n $bg

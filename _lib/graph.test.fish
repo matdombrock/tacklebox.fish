@@ -1,43 +1,72 @@
 source ./graph.fish
 
-set pos 0 0
+set frame "\
+wwww
+wwww
+wrww
+rgby"
 
-graph.init 48 20 (set_color -b brblack)" "(set_color normal)
-# Hide cursor
-graph.cursor false
-clear
-set frame 0
-while true
-    set in (input.nb)
-    if test "$in" = q
-        break
-    else if test "$in" = w
-        set pos[2] (math $pos[2] - 1)
-    else if test "$in" = s
-        set pos[2] (math $pos[2] + 1)
-    else if test "$in" = a
-        set pos[1] (math $pos[1] - 1)
-    else if test "$in" = d
-        set pos[1] (math $pos[1] + 1)
-    end
-    set frame (math $frame + 1)
-    graph.clear
-    # Draw a sine wave
-    for x in (seq 0 (math $graph_width - 1))
-        # Calculate phase for animation
-        set phase (math $frame / 5.0)
-        # Calculate sine value (range: -1 to 1)
-        set rad (math "$x / $graph_width * 2 * $PI + $phase")
-        set sin_val (math "sin($rad)")
-        # Scale to graph height (invert y so 0 is top)
-        set y (math "round(($sin_val + 1) / 2 * ($graph_height - 1))")
-        graph.px $x $y (set_color -b red black)'~'(set_color normal)
-    end
-    graph.string 0 0 "$frame $pos[1],$pos[2]"
-    graph.px $pos[1] $pos[2] (set_color -b green)@(set_color normal)
-    graph.line 2 2 10 10 x
-    graph.render
-    # sleep (math 1 / 160.0)
-end
-#  Show cursor
-graph.cursor true
+set frame2 "\
+w w w w
+w w w w
+w r w w
+r g b y"
+
+set frame3 "\
+r g b y c m l w
+R G B Y C M L W"
+
+set frame4 "\
+C C . W . . . . . . . . . . . C C
+C . . . . . . . . . . . . . . . C
+. . g g g . g . g g g . g . g . .
+. . g . . . g . g . . . g . g . W
+. . r r . . r . r r r . r r r . .
+. . r . . . r . . . r . r . r . .
+W . b . . . b . . . b . b . b . .
+. . b . . . b . b b b . b . b . .
+C . . . . . . . . . . . . . . . C
+C C . . . . . . . . . . . W . C C"
+
+set frame5 "\
+. . . . w w w w w w w w . . . .
+. . . . w w . w w w w . . . . .
+. . . . w w . . . . w w . . . .
+. . . . w . . . . . . w . . . .
+. . . . w w . . . . . . . . . .
+. . . . w w w w w w w . . . . .
+. . . . w w . w w w w . . . . .
+. . . . w w . . . . w . . . . .
+. . . . w w . . . . . . . . . .
+. . . . . w . . . . . . . . . .
+. . . . . w . . . . . . . . . .
+. . . . w w . . . . . . . . . .
+. . . . . w . . . . . . . . . .
+. . . . w . . . . . . . . . . .
+. . . . w w . . . . . . . . . .
+. . . . w . . . . . . . . . . ."
+
+set frame6 "\
+. . . . . . . r .
+. . . . . . r r .
+. . . . . . . r .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . . . . . . .
+. . . m . . . . .
+y y g m g g g . .
+y y g m y y g r .
+. g g m y y r r r"
+
+graph.render $frame2
+graph.render $frame3
+graph.render $frame4
+graph.render $frame5
+graph.render $frame6
+
+set frame (graph.frame_new 10 10 | string collect)
+set frame (graph.frame_set 1 1 g $frame | string collect)
+set frame (graph.frame_set 10 10 g $frame | string collect)
+graph.render $frame

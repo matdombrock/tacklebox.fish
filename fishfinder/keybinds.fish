@@ -4,6 +4,7 @@
 
 # Keybindings for FishFinder actions are suffixed `:` (colon)
 kb up: left
+kb up: ctrl-u
 kb hidden: ctrl-a
 kb explode: ctrl-x
 kb view: ctrl-v
