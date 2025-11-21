@@ -106,6 +106,11 @@ function graph.frame_set
         if test $i = $y
             set -l line $lines[$i]
             set -l chars (string split '' $line)
+            # NOTE:
+            # This approach works but can result in bad indicies
+            # Its also not significantly faster
+            # set -l chars $chars[1..(math "$x - 1")] $c $chars[(math "$x + 1")..-1]
+            # set -a new_frame (string join '' $chars)
             for j in (seq 1 (count $chars))
                 if test $j = $x
                     set -a new_frame $c
