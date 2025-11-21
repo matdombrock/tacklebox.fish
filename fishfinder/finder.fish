@@ -194,67 +194,6 @@ function fishfinder
     else if type -q batcat # Some systems (e.g. Debian) use batcat instead of bat
         set file_viewer 'batcat --plain --color=always'
     end
-    # Set the fzf preview command
-    # NOTE: Passing functions from our script into fzf is tricky
-    # The easiest way is to define them as strings and eval them inside fzf
-    set fzf_preview_fn '\
-function tip;
-  echo (set_color brgreen) command(set_color normal):;
-  echo (set_color bryellow)$argv(set_color normal);
-end;
-# Since we use the -F flag on ls we might have a trailing asterisk
-set clean_sel (echo {} | string replace "*" "");
-if test {} = "'$exit_str'"; 
-    tip "Exit back to the shell";
-    echo ""
-    set_color brblue
-    echo " Keybinds:";
-    echo -e "'$ff_kb_txt'" | string trim;
-    set_color brgreen
-    echo "modify at:"
-    set_color brcyan
-    echo '$ff_kb_path';
-else if test {} = "'$goto_str'"; 
-    tip "Go to a directory (cd)"; 
-else if test {} = "'$back_str'"; 
-    tip "Go back to previous directory (cd -)";
-else if test {} = "'$up_str'"; 
-    tip "Go up one directory (cd ..)"; 
-else if test {} = "'$explode_str'"; 
-    tip "Explode current directory (find . -type f)"; 
-else if test {} = "'$unexplode_str'"; 
-    tip "Unexplode current directory";
-else if test -f $clean_sel; 
-    echo (set_color --bold bryellow) file(set_color normal):
-    '$file_viewer' $clean_sel; 
-else if test -d $clean_sel; 
-    echo (set_color --bold brred)  directory(set_color normal):
-    ls --group-directories-first -A1 -F --color=always $clean_sel 2>/dev/null; 
-else if test -L $clean_sel; 
-    echo (set_color --bold bryellow)symlink(set_color normal):
-    ls -l --color=always $clean_sel 2>/dev/null;
-else if test -e $clean_sel; 
-    echo (set_color --bold bryellow)other(set_color normal):
-    ls -l --color=always $clean_sel 2>/dev/null;
-else if test -S $clean_sel; 
-    echo (set_color --bold bryellow)socket(set_color normal):
-    ls -l --color=always $clean_sel 2>/dev/null;
-else if test -p $clean_sel; 
-    echo (set_color --bold bryellow)pipe(set_color normal):
-    ls -l --color=always $clean_sel 2>/dev/null;
-else if test -b $clean_sel; 
-    echo (set_color --bold bryellow)block device(set_color normal):
-    ls -l --color=always $clean_sel 2>/dev/null;
-else if test -c $clean_sel; 
-    echo (set_color --bold bryellow)character device(set_color normal):
-    ls -l --color=always $clean_sel 2>/dev/null;
-else if test -d $clean_sel = false; and test -f $clean_sel = false; 
-    echo (set_color --bold bryellow)non-standard file type(set_color normal):
-    ls -l --color=always $clean_sel 2>/dev/null;
-else; 
-    echo No preview available.; 
-end
-'
 
     # Define path to ff_lp temp file
     set ff_lp_path /tmp/ff_lp
