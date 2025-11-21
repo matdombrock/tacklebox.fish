@@ -9,8 +9,14 @@
 
 # Render frame with unicode half blocks
 function graph.render
+    set -l frame_str $argv[1]
+    set -l mode $argv[2]
+    if test -z "$mode"
+        set mode half
+    end
     function get_color
-        switch $argv[1]
+        set -l c $argv[1]
+        switch $c
             case r
                 echo red
             case g
@@ -48,12 +54,6 @@ function graph.render
             case L
                 echo brblack
         end
-    end
-
-    set -l frame_str $argv[1]
-    set -l mode $argv[2]
-    if test -z "$mode"
-        set mode half
     end
 
     set -l lines (string split \n $frame_str)
