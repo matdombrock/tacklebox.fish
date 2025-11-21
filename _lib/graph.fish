@@ -103,14 +103,18 @@ function graph.frame_set
     set -l new_frame
     set -l lines (string split \n $frame)
     for i in (seq 1 (count $lines))
-        set -l line $lines[$i]
-        set -l chars (string split '' $line)
-        for j in (seq 1 (count $chars))
-            if test $i = $y; and test $j = $x
-                set -a new_frame $c
-            else
-                set -a new_frame $chars[$j]
+        if test $i = $y
+            set -l line $lines[$i]
+            set -l chars (string split '' $line)
+            for j in (seq 1 (count $chars))
+                if test $j = $x
+                    set -a new_frame $c
+                else
+                    set -a new_frame $chars[$j]
+                end
             end
+        else
+            set -a new_frame $lines[$i]
         end
         set -a new_frame "\n"
     end
