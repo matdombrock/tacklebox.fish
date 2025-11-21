@@ -1,27 +1,31 @@
 # Vest
 
-Vest is a curated history fuzzy finder. It is not really history but a list of
-commands of your choosing.
+Vest is a "curated history" fuzzy finder. It is not really history but a list
+of commands of your choosing. Localized. It is like you're the winner of a war
+and can write your own history.
 
-# Config
+## Config
 
-The config should be in `~/.config/fish/vest_commands.txt` and look like this:
+The config should be in `.vest` and look like this:
 
 ```
-Git : Graph Log : git log --oneline --graph --decorate --all
-Git : Commit WIP : git commit -am "wip"
-Docker : Nuke All : docker system prune -a --volumes
-Docker : Enter Container : docker exec -it (docker ps -q | fzf) /bin/bash
-K8s : Get Pods : kubectl get pods --all-namespaces
-K8s : Describe Pod : kubectl describe pod
-MyUtils : Update System : sudo apt update && sudo apt upgrade -y
+Graph Log: git log --oneline --graph --decorate --all
+Commit WIP :git commit -am "wip"
+Nuke All :docker system prune -a --volumes
+Enter Container: docker exec -it (docker ps -q | fzf) /bin/bash
+Get Pods: kubectl get pods --all-namespaces
+Describe Pod: kubectl describe pod
+Update System: sudo apt update && sudo apt upgrade -y
 ```
 
-The format is one entry per row, and each row has three fields separated by ` : ` (with spaces).
+The format is one entry per row, and each row has three fields separated by `: `.
 
-1. Category
-2. Friendly name
-3. Command
+1. Friendly name
+2. Command
+
+You can sprinkle `.vest` files all over your file system, and vest will pick
+them up much like `git` picks up `.gitconfig`, adding up commands as it
+traverses upwards.
 
 ## Requires
 
