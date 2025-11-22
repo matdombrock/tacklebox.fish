@@ -17,8 +17,16 @@ function input.char
 end
 
 function input.nb
-    stty -icanon -echo min 0 time 1
+    set -l oldmode (stty -g)
+    stty -icanon -echo min 0 time 0
     set char (dd bs=1 count=1 2>/dev/null)
-    stty sane
+    # Clear the buffer by reading until nothing is left
+    while true
+        set discard (dd bs=1 count=1 2>/dev/null)
+        if test -z "$discard"
+            break
+        end
+    end
+    stty $oldmode
     echo $char
 end

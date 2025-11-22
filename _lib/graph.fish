@@ -114,7 +114,7 @@ function graph.frame_new
         end
         set -a frame "\n"
     end
-    echo -e (string join '' $frame)
+    echo -e (string join '' $frame) | string collect
 end
 
 # set a "pixel" in the frame at (x, y) with color c
@@ -146,5 +146,20 @@ function graph.frame_set
         end
         set -a new_frame "\n"
     end
-    echo -e (string join '' $new_frame)
+    echo -e (string join '' $new_frame) | string collect
+end
+
+# Reset cursor position
+function graph.reset_cursor
+    echo -en "\033[H"
+end
+
+# Hide the cursor
+function graph.hide_cursor
+    echo -en "\033[?25l"
+end
+
+# Show the cursor
+function graph.show_cursor
+    echo -en "\033[?25h"
 end

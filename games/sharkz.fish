@@ -45,8 +45,7 @@ clear
 set points 0
 
 function sharks
-    # Hide cursor
-    echo -en "\033[?25l"
+    graph.hide_cursor
     # Initialize enemies (x1 y1 x2 y2 ...)
     set enemies
     for i in (seq 1 $enemy_count)
@@ -58,17 +57,17 @@ function sharks
     set player (math round (math $width / 2)) (math round (math $height / 2))
     set boat (random 1 $width) (random 1 $height)
     while true
-        set frame (graph.frame_new $width $height L | string collect)
-        set frame (graph.frame_set $player[1] $player[2] g $frame | string collect)
+        set frame (graph.frame_new $width $height L)
+        set frame (graph.frame_set $player[1] $player[2] g $frame)
         # Render all enemies
         for idx in (seq 1 2 (math (count $enemies) - 1))
             set x $enemies[$idx]
             set y $enemies[(math $idx + 1)]
-            set frame (graph.frame_set $x $y R $frame | string collect)
+            set frame (graph.frame_set $x $y R $frame)
         end
-        set frame (graph.frame_set $boat[1] $boat[2] b $frame | string collect)
+        set frame (graph.frame_set $boat[1] $boat[2] b $frame)
         # clear
-        echo -en "\033[H" # Reset cursor position
+        graph.reset_cursor
         graph.render $frame full
         # Check for escape
         if test $player[1] -eq 0; or test $player[1] -eq (math $width + 1); or test $player[2] -eq 0; or test $player[2] -eq (math $height + 1)
@@ -168,8 +167,7 @@ function sharks
             set boat $bx $by
         end
     end
-    # Show cursor
-    echo -en "\033[?25h"
+    graph.show_cursor
     echo "Points: $points"
     set again ""
     while test $again != y; and test $again != n

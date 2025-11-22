@@ -80,3 +80,5 @@ function ollama_chat
     }')
     curl -s $server/api/chat -d "$payload" | jq -r '.message.content'
 end
+
+
