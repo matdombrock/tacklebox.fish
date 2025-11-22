@@ -3,7 +3,7 @@
 source (dirname (realpath (status --current-filename)))/../_lib/graph.fish
 source (dirname (realpath (status --current-filename)))/../_lib/input.fish
 
-set width 64
+set width 128
 set height 64
 
 set player 1 1
@@ -54,6 +54,7 @@ while true
     set fend (date +%s%N)
     set delta (math "($fend - $fstart) / 1000000")
     echo "Delta: $delta ms"
+    echo "Target: $frame_target ms"
     set diff (math $frame_target - $delta)
     echo "Diff: $diff ms"
     if test $diff -gt 0
