@@ -1,5 +1,7 @@
 #! /usr/bin/env fish
 
+# A stateless graphics system
+
 # Example frame
 # set frame "\
 # w w w w
