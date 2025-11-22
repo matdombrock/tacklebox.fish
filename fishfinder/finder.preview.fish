@@ -53,12 +53,16 @@ if test $selection = $exit_str
     tip "Exit back to the shell"
     echo ""
     set_color brblue
-    echo " Keybinds:"
+    echo " keybinds"
     echo -e "$ff_kb_txt" | string trim
-    set_color brgreen
-    echo "modify at:"
+    set_color brblue
+    echo " loaded from"
     set_color brcyan
     echo "$ff_kb_path"
+    set_color brblue
+    echo " set with"
+    set_color brcyan
+    echo "set -X FF_KB <path/to/keybinds.fish>"
 else if test "$selection" = "$goto_str"
     tip "Go to a directory (cd)"
 else if test "$selection" = "$back_str"
