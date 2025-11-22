@@ -133,3 +133,5 @@ kb goto ctrl-d
 - Save position & query when reloading
 - Improve reload speed
 - Support multi-select
+- Select dir and exit command
+- Edit dir command
