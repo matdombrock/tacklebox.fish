@@ -22,6 +22,7 @@ set gstatus (git status -s)
 if test (count $gstatus) -eq 0
     set_color green
     echo Clean
+    exit 0
 else
     git status -s
 end
