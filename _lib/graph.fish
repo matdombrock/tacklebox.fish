@@ -117,6 +117,36 @@ function graph.frame_new
     echo -e (string join '' $frame) | string collect
 end
 
+# NOTE:
+# This approach works but can result in bad indicies
+# Its also not significantly faster
+# set -l chars $chars[1..(math "$x - 1")] $c $chars[(math "$x + 1")..-1]
+# set -a new_frame (string join '' $chars)
+#
+# NOTE: Not signficantly faster
+# function graph.frame_set
+#     set -l x $argv[1]
+#     set -l y $argv[2]
+#     set -l c $argv[3]
+#     set -l frame $argv[4]
+#     set -l lines (string split \n $frame)
+#     for i in (seq 1 (count $lines))
+#         if test $i = $y
+#             set -l line $lines[$i]
+#             # replace character at position x with c using string replace
+#             set -l prefix (string sub -s 1 -l (math "$x - 1") $line)
+#             set -l suffix (string sub -s (math "$x + 1") $line)
+#             set -l new_line "$prefix$c$suffix"
+#             set -a new_frame $new_line"\n"
+#         else
+#             set -a new_frame $lines[$i]"\n"
+#         end
+#     end
+#     echo -e (string join '' $new_frame) | string collect
+# end
+#
+# TODO:
+# Batch draw calls to improve performance
 # set a "pixel" in the frame at (x, y) with color c
 function graph.frame_set
     set -l x $argv[1]
@@ -129,11 +159,6 @@ function graph.frame_set
         if test $i = $y
             set -l line $lines[$i]
             set -l chars (string split '' $line)
-            # NOTE:
-            # This approach works but can result in bad indicies
-            # Its also not significantly faster
-            # set -l chars $chars[1..(math "$x - 1")] $c $chars[(math "$x + 1")..-1]
-            # set -a new_frame (string join '' $chars)
             for j in (seq 1 (count $chars))
                 if test $j = $x
                     set -a new_frame $c
@@ -141,13 +166,58 @@ function graph.frame_set
                     set -a new_frame $chars[$j]
                 end
             end
+            set -a new_frame "\n"
         else
-            set -a new_frame $lines[$i]
+            set -a new_frame $lines[$i]"\n"
         end
-        set -a new_frame "\n"
     end
     echo -e (string join '' $new_frame) | string collect
 end
+
+# Set bulk pixels in the frame
+function graph.frame_set_bulk
+    set -l frame $argv[1]
+    set -l points $argv[2..-1]
+
+    set -l lines (string split \n $frame)
+
+    for point in $points
+        # Split the point string into x, y, c
+        set -l parts (string split ' ' $point)
+        set -l x $parts[1]
+        set -l y $parts[2]
+        if test $y -gt (count $lines)
+            continue
+        end
+        if test $y -lt 1
+            continue
+        end
+        if test $x -gt (string length $lines[$y])
+            continue
+        end
+        if test $x -lt 1; or test $y -lt 1
+            continue
+        end
+        set -l c $parts[3]
+
+        # Get the line and split into characters
+        set -l line $lines[$y]
+        set -l chars (string split '' $line)
+
+        # Replace character at position x (Fish arrays are 1-based)
+        set chars[$x] $c
+
+        # Reconstruct the line
+        set lines[$y] (string join '' $chars)
+    end
+
+    # Output the new frame
+    printf '%s\n' $lines | string collect
+end
+# Example usage:
+# set frame (graph.frame_new 10 5 .)
+# set frame (graph.frame_set_bulk $frame "1 1 r" "2 2 g" "3 3 b")
+# graph.render $frame
 
 # Reset cursor position
 function graph.reset_cursor

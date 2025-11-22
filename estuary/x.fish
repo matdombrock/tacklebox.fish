@@ -3,16 +3,33 @@
 source (dirname (realpath (status --current-filename)))/../_lib/graph.fish
 source (dirname (realpath (status --current-filename)))/../_lib/input.fish
 
-set width 128
-set height 64
+set width 64
+set height 32
 
 set player 1 1
 set enemy $width $height
-set fc 0
-set frame_target (math 1000 / 12) # Target FPS
+set tic 0
+set frame_target (math 1000 / 16) # Target FPS
 
 # Cache empty frame
 set frame_new (graph.frame_new $width $height .)
+
+function enemy
+    if test (math $tic % 5) -ne 0
+        return
+    end
+    # Move enemy 
+    if test $enemy[1] -lt $player[1]
+        set enemy[1] (math $enemy[1] + 1)
+    else if test $enemy[1] -gt $player[1]
+        set enemy[1] (math $enemy[1] - 1)
+    end
+    if test $enemy[2] -lt $player[2]
+        set enemy[2] (math $enemy[2] + 1)
+    else if test $enemy[2] -gt $player[2]
+        set enemy[2] (math $enemy[2] - 1)
+    end
+end
 
 clear
 graph.hide_cursor
@@ -32,25 +49,29 @@ while true
         case q
             break
     end
-    # Move enemy 
-    if test $enemy[1] -lt $player[1]
-        set enemy[1] (math $enemy[1] + 1)
-    else if test $enemy[1] -gt $player[1]
-        set enemy[1] (math $enemy[1] - 1)
-    end
-    if test $enemy[2] -lt $player[2]
-        set enemy[2] (math $enemy[2] + 1)
-    else if test $enemy[2] -gt $player[2]
-        set enemy[2] (math $enemy[2] - 1)
-    end
+    enemy
     graph.reset_cursor
     set frame $frame_new
-    set frame (graph.frame_set $player[1] $player[2] c $frame)
-    set frame (graph.frame_set $enemy[1] $enemy[2] r $frame)
+    # set frame (graph.frame_set $player[1] $player[2] c $frame)
+    # set frame (graph.frame_set $player[1] (math $player[2] - 1) W $frame)
+    # set frame (graph.frame_set $enemy[1] $enemy[2] w $frame)
+    # set frame (graph.frame_set $enemy[1] (math $enemy[2] - 1) r $frame)
+    # set frame (graph.frame_set $enemy[1] (math $enemy[2] + 1) r $frame)
+    # set frame (graph.frame_set (math $enemy[1] - 1) $enemy[2] r $frame)
+    # set frame (graph.frame_set (math $enemy[1] + 1) $enemy[2] r $frame)
+    set frame (graph.frame_set_bulk $frame \
+        "$player[1] $player[2] c" \
+        "$player[1] $(math $player[2] - 1) W" \
+        "$enemy[1] $enemy[2] w" \
+        "$enemy[1] $(math $enemy[2] - 1) r" \
+        "$enemy[1] $(math $enemy[2] + 1) r" \
+        "$(math $enemy[1] - 1) $enemy[2] r" \
+        "$(math $enemy[1] + 1) $enemy[2] r"
+    )
     graph.render $frame
-    # sleep 0.05
-    echo "Frame: $fc"
-    set fc (math $fc + 1)
+    # Meta
+    set tic (math $tic + 1)
+    echo "Tic: $tic"
     set fend (date +%s%N)
     set delta (math "($fend - $fstart) / 1000000")
     echo "Delta: $delta ms"
