@@ -42,6 +42,8 @@ function kb
         set action (spec "exec:{}")
     else if test $action_id = edit:
         set action (spec "edit:{}")
+    else if test $action_id = editpwd:
+        set action (spec "edit:$(pwd)")
     else if test $action_id = open:
         set action (spec "open:{}")
     else if test $action_id = copy:

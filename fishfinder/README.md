@@ -88,6 +88,8 @@ kb toggle-preview alt-h
 - `last:    `: Go to the last directory (cd -)
 - `print:   `: Print the selected file path and exit
 - `exec:    `: Execute the selected file
+- `edit:    `: Edit the selected directory or file
+- `editpwd: `: Edit the pwd
 - `open:    `: Open file or directory in GUI (open / xdg-open)
 - `copy:    `: Copy the selected path to the system clipboard
 - `del:     `: Delete the selected file or directory with confirmation

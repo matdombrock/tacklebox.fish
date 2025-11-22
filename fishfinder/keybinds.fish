@@ -12,6 +12,7 @@ kb goto: ctrl-g
 kb last: ctrl-l
 kb print: ctrl-p
 kb exec: ctrl-t
+kb editpwd: ctrl-w
 kb edit: ctrl-e
 kb open: ctrl-o
 kb copy: ctrl-y
