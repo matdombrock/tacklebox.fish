@@ -43,7 +43,7 @@ function kb
     else if test $action_id = edit:
         set action (spec "edit:{}")
     else if test $action_id = editpwd:
-        set action (spec "edit:$(pwd)")
+        set action (spec "edit:.")
     else if test $action_id = open:
         set action (spec "open:{}")
     else if test $action_id = copy:
@@ -436,7 +436,7 @@ function fishfinder
         while not contains $cmd $exit_cmds
             set cmd (input.line $cmd_str)
             # Import aliases, set sel, and execute command
-            eval "source $base/../angler.alias.fish; set sel $sel; $cmd"
+            eval "source $base/../angler.alias.fish; set sel '$sel'; $cmd"
         end
         fishfinder $flags
         return
